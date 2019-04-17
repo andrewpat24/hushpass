@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Payments from './Payments';
 
 class Header extends Component {
 
@@ -14,23 +13,13 @@ class Header extends Component {
                     <Fragment>
                         <li> <a href="/api/auth/google">Login with Google</a> </li>
                     </Fragment>
-                )
-                break; 
+                );
             default: 
                 return (
                     <Fragment>
-
-                        <li style={{
-                            margin: '0 5px'
-                        }}> 
-
-                        Credits: {this.props.auth.credits}
-
-                        </li> 
-                        <li > <a><Payments /></a> </li>
                         <li > <a href="/api/auth/logout">Logout</a> </li>
                     </Fragment>
-                )
+                );
         }
 
     }
@@ -41,8 +30,8 @@ class Header extends Component {
         return (
             <nav>
                 <div className="nav-wrapper" >
-                   
-                    <Link to={AuthState ? '/surveys' : '/'} className="left brand-logo">
+                        
+                    <Link to={AuthState ? '/' : '/'} className="left brand-logo">
                         HushPass
                     </Link>
                     

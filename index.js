@@ -16,7 +16,6 @@ app.use(bodyParser.json());
 const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URI);
 require('./models/Users');
-require('./models/Surveys');
 
 // Session 
 const cookieSession = require('cookie-session');
@@ -37,12 +36,8 @@ app.use(passport.session());
 
 // Routes 
 const authRouter = require('./routes/auth');
-const billingRouter = require('./routes/billing');
-const surveyRouter = require('./routes/survey');
 
 app.use('/api/auth', authRouter);
-app.use('/api/billing', billingRouter);
-app.use('/api/survey', surveyRouter);
 
 // Prod Client Routes
 if (process.env.NODE_ENV === 'production') {

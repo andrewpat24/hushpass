@@ -7,7 +7,7 @@ const Landing = () => {
             textAlign: 'center'
         }}>
             <h1>HushPass</h1>
-            <span>Share Files, No Wiles</span>
+            <span>Share Files Securely.</span>
         </div>
     )
 }
