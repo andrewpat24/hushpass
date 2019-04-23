@@ -7,6 +7,7 @@ class Header extends Component {
     renderContent() {
         let isLoggedIn = !!this.props.auth
     
+        /*
         switch (isLoggedIn) {
             case false: 
                 return (
@@ -21,6 +22,7 @@ class Header extends Component {
                     </Fragment>
                 );
         }
+        */
 
     }
 
