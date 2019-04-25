@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "concurrently": "^4.1.0",
+    "cors": "^2.8.5",
     "http-proxy-middleware": "^0.19.1",
     "materialize-css": "^1.0.0",
     "react": "^16.8.3",
