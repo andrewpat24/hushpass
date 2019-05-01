@@ -1,31 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import axios from 'axios';
+import React from 'react';
+// Components
+import UploadForm from './UploadForm';
+// Styles
+import '../styles/components/landing.css'
 
-class Landing extends Component{
-	constructor(props){
-		super(props);
-		this.state={
-			selectedFile:null,
-			loaded:0
-		}
-	}
+const Landing = () => (
+	<section componentName="Landing" >
 
-	onChangeHandler= async (event)=>{
-		console.log('onChangeHandler');
-  		let files = event.target.files[0];
-  		await this.setState({
-     		selectedFile: files,
-     		loaded:0
-  		});
-  		console.log(this.state.selectedFile);
-	}
+		<div class="header">
+			<h1>HushPass</h1>
+			<span>Share Files Securely.</span>
+		</div>
 
-	onClickHandler = () => {
-    	// const data = new FormData() 
-    	// for(var x = 0; x<this.state.selectedFile.length; x++) {
-     //  		data.append('file', this.state.selectedFile[x])
-    	// }
+		<UploadForm /> 
 
 		console.log('axios',this.state.selectedFile);
     	axios.post("/api/db/upload/", this.state.selectedFile)
@@ -72,4 +59,5 @@ class Landing extends Component{
 	}
 
 }
+
 export default Landing; 
