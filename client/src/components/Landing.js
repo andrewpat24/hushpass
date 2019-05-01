@@ -28,7 +28,7 @@ class Landing extends Component{
     	// }
 
 		console.log('axios',this.state.selectedFile);
-    	axios.post("/api/upload/", this.state.selectedFile)
+    	axios.post("/api/db/upload/", this.state.selectedFile)
       	
       	.then(res => { // then print response status
         	// toast.success('upload success')
@@ -42,7 +42,7 @@ class Landing extends Component{
 
 	test = () =>{
 
-		axios.get("/api/upload/").then(res=>{
+		axios.get("/api/db/upload/").then(res=>{
 			console.log('sent');
 		});
 	}
