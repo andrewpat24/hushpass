@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
  var documentsSchema = new Schema({
-    id: Number,
+    docId: {type:String,trim:true},
     data: {},
     title:  {type:String, trim:true, default:'file'},
     hashedKey: String,
