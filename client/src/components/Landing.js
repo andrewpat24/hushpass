@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
 import axios from 'axios';
 
 class Landing extends Component{
@@ -12,36 +11,31 @@ class Landing extends Component{
     }
 
     onChangeHandler= async (event)=>{
-        console.log('onChangeHandler');
-        // const file = new Blob([event.target.files[0]],{type:event.target.files[0]})
+        // console.log('onChangeHandler');
+
         const file = event.target.files[0];
         
         await this.setState({
             selectedFile: file
         
         });
-        console.log(this.state.selectedFile);
-        console.log(this.state.selectedFile.length);
+        // console.log(this.state.selectedFile);
     }
 
     onClickHandler = () => {
         const data = new FormData();
         data.append('file',this.state.selectedFile);
-        data.append('key','key');
+        data.append('key',document.getElementById('key').value);
 
         const config = { headers:{'Content-Type':'multipart/form-data'}};
 
-        console.log('axios',data);
+        // console.log('axios',data);
         axios.post("/api/db/upload/", data, {})
-        // axios.post("/api/db/upload/", foo:'bar')
         
-        
-        .then(res => { // then print response status
-            // toast.success('upload success')
-            console.log('res');
+        .then(res => { 
+            console.log('res: ',res);
         })
-        .catch(err => { // then print response status
-            // toast.error('upload fail')
+        .catch(err => { 
             console.log("Upload Failed\n"+err);
         })
     }
