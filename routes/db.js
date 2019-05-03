@@ -19,14 +19,14 @@ router.post("/upload",  function(req, res) {
     
     form.parse(req, async function(err, fields, files) {
   		console.log(fields);
-  		console.log(files[''].name);
+  		console.log(files);
 
   		const docId = uuidv4();
 
   		const newDoc = await new Document({
   			docId: docId,
-    		data: files[''],
-    		fileName:  files[''].name,
+    		data: files['file'],
+    		fileName:  files['file'].name,
     		hashedKey: fields.key,
     		userID: req.userID
   		})
@@ -54,7 +54,7 @@ router.get("/download/:documentCode", async function(req,res){
 	});
 
 	console.log(document);
-	return res.status(200).send(document);
+	return res.status(200).download(document.data.path);
 });
 
 

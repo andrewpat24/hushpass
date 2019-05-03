@@ -24,13 +24,13 @@ class Landing extends Component{
 
     onClickHandler = () => {
         const data = new FormData();
-        data.append('file',this.state.selectedFile);
+        data.append("file",this.state.selectedFile, 'file-name');
         data.append('key',document.getElementById('key').value);
 
         const config = { headers:{'Content-Type':'multipart/form-data'}};
 
         // console.log('axios',data);
-        axios.post("/api/db/upload/", data, {})
+        axios.post("/api/db/upload/", data, config)
         
         .then(res => { 
             console.log('res: ',res);
