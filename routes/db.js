@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const gridfs = require('gridfs-stream');
 const fs = require('fs');
 
+const formidable = require('formidable');
+
 const Document = mongoose.model('documents'); 
 mongoose.Promise = global.Promise;
 gridfs.mongo = mongoose.mongo;
@@ -13,11 +15,23 @@ const connection = mongoose.connection;
 router.post("/upload",function(req, res) {
     
     console.log('*** arived in post db/upload ***');
-    console.log(req.body);
+    const form = new formidable.IncomingForm();
+    let formFields,formFiles;
+    form.parse(req, function(err, fields, files) {
+  		console.log(fields);
+  		console.log(files);
+  		formFields = fields;
+  		formFiles = files;
+  		
+	});
+        
+    const data = req.body;
+    // console.log(data);
     return res.status(200)
-    .send(req.body);
+    .send(formFiles);
     
 });
+
 
 router.get("/test", async function(req,res){
 	console.log('*** arived in get db/test ***');
