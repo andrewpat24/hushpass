@@ -16,7 +16,7 @@ router.get('/google/callback',
 
 router.get('/current_user', 
     (req, res) => {
-        console.log(req.user, req.session);
+        // console.log(req.user, req.session);
         res.send(req.user);
     }
 );

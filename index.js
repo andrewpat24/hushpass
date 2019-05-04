@@ -19,8 +19,9 @@ app.use(bodyParser.json());
 
 // Mongoose
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGO_URI,{useNewUrlParser:true});
 require('./models/Users');
+require('./models/Documents');
 
 // Session 
 const cookieSession = require('cookie-session');
@@ -41,10 +42,10 @@ app.use(passport.session());
 
 // Routes 
 const authRouter = require('./routes/auth');
-const uploadRouter = require('./routes/upload');
+const uploadRouter = require('./routes/db');
 
 app.use('/api/auth', authRouter);
-app.use('/api/upload/', uploadRouter);
+app.use('/api/db/', uploadRouter);
 
 // Prod Client Routes
 if (process.env.NODE_ENV === 'production') {
