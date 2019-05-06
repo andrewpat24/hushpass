@@ -49,25 +49,24 @@ class Landing extends Component{
 
     
     render() {
-    return (
-        <div id='super'>
-        <div style={{
-            textAlign: 'center'
-            }}>
-            <h1>HushPass</h1>
-            <span>Share Files Securely.</span>
-        </div>
+        return (
+            <section component='landing'>
 
-        <div id='body'>
-            <form >
-                <input type='text' name='key' id='key' placeholder='Your Secret Key'/>
-                <input type='file' name='file' className="form-control" onChange={this.onChangeHandler}/>
-                <button type="button" className="btn" onClick={this.onClickHandler}>Upload</button>
-            </form>
-        </div>
-        <button type="button" className="btn" onClick={this.test}>test</button>
+                <div style={{ textAlign: 'center' }}>
+                    <h1>HushPass</h1>
+                    <span>Share Files Securely.</span>
+                </div>
 
-        </div>
+                <div id='body'>
+                    <form >
+                        <input type='text' name='key' id='key' placeholder='Your Secret Key'/>
+                        <input type='file' name='file' className="form-control" onChange={this.onChangeHandler}/>
+                        <button type="button" className="btn" onClick={this.onClickHandler}>Upload</button>
+                    </form>
+                </div>
+                <button type="button" className="btn" onClick={this.test}>test</button>
+
+            </section>
         );
     }
 
