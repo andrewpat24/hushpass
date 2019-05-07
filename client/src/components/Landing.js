@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+// Components
+import Confirmation from './Confirmation';
 
 class Landing extends Component{
     constructor(props){
         super(props);
-        this.state={
-            selectedFile:null,
-            loaded:0
+        this.state= {
+            selectedFile: null,
+            fileId: null,
+            loaded: 0, 
+            showConfirmation: false
         }
     }
 
     onChangeHandler= async (event)=>{
-        // console.log('onChangeHandler');
 
         const file = event.target.files[0];
         
         await this.setState({
             selectedFile: file
-        
         });
-        // console.log(this.state.selectedFile);
     }
 
     onClickHandler = () => {
@@ -34,10 +35,16 @@ class Landing extends Component{
         
         .then(res => { 
             console.log('res: ',res);
+            this.setState({
+                showDownloadForm: false, 
+                fileId: res.data
+            });
         })
         .catch(err => { 
             console.log("Upload Failed\n"+err);
         })
+
+
     }
 
     test = () =>{
@@ -47,27 +54,49 @@ class Landing extends Component{
         });
     }
 
+    renderForm () {
+        const Upload = (
+            <div id='body'>
+                <form >
+                    <input type='text' name='key' id='key' placeholder='Your Secret Key'/>
+                    <input type='file' name='file' className="form-control" onChange={this.onChangeHandler}/>
+                    <button type="button" className="btn" onClick={this.onClickHandler}>Upload</button>
+                </form>
+            </div>
+        )
+
+      
+
+        if(this.state.fileId) {
+            return Confirmation;
+        } else {
+            return Upload
+        }  
+            
+    }
     
     render() {
-    return (
-        <div id='super'>
-        <div style={{
-            textAlign: 'center'
-            }}>
-            <h1>HushPass</h1>
-            <span>Share Files Securely.</span>
-        </div>
+        return (
+            <section component='landing'>
 
-        <div id='body'>
-            <form >
-                <input type='text' name='key' id='key' placeholder='Your Secret Key'/>
-                <input type='file' name='file' className="form-control" onChange={this.onChangeHandler}/>
-                <button type="button" className="btn" onClick={this.onClickHandler}>Upload</button>
-            </form>
-        </div>
-        <button type="button" className="btn" onClick={this.test}>test</button>
+                <div style={{ textAlign: 'center' }}>
+                    <h1>HushPass</h1>
+                    <span>Share Files Securely.</span>
+                </div>
 
-        </div>
+                {!this.state.fileId ? 
+                <div id='body'>
+                    <form >
+                        <input type='text' name='key' id='key' placeholder='Your Secret Key'/>
+                        <input type='file' name='file' className="form-control" onChange={this.onChangeHandler}/>
+                        <button type="button" className="btn" onClick={this.onClickHandler}>Upload</button>
+                    </form>
+                </div> 
+                : <Confirmation fileId={this.state.fileId} /> }
+
+                <button type="button" className="btn" onClick={this.test}>test</button>
+
+            </section>
         );
     }
 
