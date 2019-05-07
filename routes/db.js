@@ -20,14 +20,15 @@ router.post("/upload",  function(req, res) {
     const form = new formidable.IncomingForm();
     
     form.parse(req, async function(err, fields, files) {
-  		console.log(fields);
+  		// console.log(fields);
   		// console.log(files);
 
   		const docId = uuidv4();
 
   		const newDoc = await new Document({
   			docId: docId,
-    		fileName:  files['file'].name,
+    		fileName: files['file'].name,
+    		fileType: files['file'].type,
     		hashedKey: fields.key,
     		userID: req.userID
   		})
@@ -38,7 +39,7 @@ router.post("/upload",  function(req, res) {
 		const writestream = gridfs.createWriteStream( {
 			filename: docId
 		});
-			// console.log("built writestream...");
+		
   		fs.createReadStream( files['file'].path ).pipe( writestream );
   		
   		writestream.on('close',function(file){
@@ -67,19 +68,17 @@ router.get("/download/:documentCode", async function(req,res){
 	});
 
 	const gridfs = await Grid(connection.db, mongoose.mongo);
-	gridfs.exist({filename:docId}, function (err, file){
-		console.log('exists: ', file);
-	});
+
 	gridfs.findOne( {filename:docId}, function (err,file){
-		console.log('found:',file);
+		
 		if (err) return res.status(400).send(err);
 		else if (!file) {
         	return res.status(404).send('Error on the database looking for the file.');
     	}
 		// return res.status(200).download( file );
 
-		res.set('Content-Type', file.contentType);
-    	res.set('Content-Disposition', 'attachment; filename="' + file.filename + '"');
+		res.set('Content-Type', document.fileType);
+    	res.set('Content-Disposition', 'attachment; filename="' + document.fileName +  '"');
 
     	var readstream = gridfs.createReadStream({filename:docId});
 

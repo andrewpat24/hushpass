@@ -25,7 +25,7 @@ class Landing extends Component{
 
     onClickHandler = () => {
         const data = new FormData();
-        data.append("file",this.state.selectedFile, 'file-name');
+        data.append("file",this.state.selectedFile, this.state.selectedFile.name);
         data.append('key',document.getElementById('key').value);
 
         const config = { headers:{'Content-Type':'multipart/form-data'}};
