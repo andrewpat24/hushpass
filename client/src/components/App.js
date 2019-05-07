@@ -6,6 +6,7 @@ import * as actions from '../actions'
 // Components
 import Header from './Header';
 import Landing from './Landing';
+import Download from './Download'
 
 class App extends Component {
 
@@ -21,6 +22,9 @@ class App extends Component {
 
                         <Header /> 
                         <Route exact path="/" component={Landing} />
+                        <Route exact path="/download" component={Download} />
+                        <Route exact path="/download/:fileId" component={Download} />
+
 
                     </div>
                 </BrowserRouter>
