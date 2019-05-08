@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
     docId: {type:String,trim:true},
     data: {},
     fileName:  {type:String, trim:true, default:'file'},
+    fileType: {type:String},
     hashedKey: String,
     expirationDate: { type: Date, default: Date.now },
     maxDownloads: { type: Number, default: 1 },
