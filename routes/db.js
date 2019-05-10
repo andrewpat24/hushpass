@@ -13,6 +13,7 @@ mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 
+const crypto = require('crypto');
 
 router.post("/upload",  function(req, res) {
     
@@ -29,7 +30,7 @@ router.post("/upload",  function(req, res) {
   			docId: docId,
     		fileName: files['file'].name,
     		fileType: files['file'].type,
-    		hashedKey: fields.key,
+    		hashedKey: crypto.createHash('sha256').update(fields.key).digest('hex'),
     		userID: req.userID
   		})
   		.save();
@@ -67,48 +68,101 @@ router.get("/download/:documentCode", async function(req,res){
 		if (err) return console.error(err);
 	});
 
-	const gridfs = await Grid(connection.db, mongoose.mongo);
+	// const gridfs = await Grid(connection.db, mongoose.mongo);
 
-	gridfs.findOne( {filename:docId}, function (err,file){
+	// gridfs.findOne( {filename:docId}, function (err,file){
 		
-		if (err) return res.status(400).send(err);
-		else if (!file) {
-        	return res.status(404).send('Error on the database looking for the file.');
-    	}
-		// return res.status(200).download( file );
+	// 	if (err) return res.status(400).send(err);
+	// 	else if (!file) {
+ //        	return res.status(404).send('Error on the database looking for the file.');
+ //    	}
+	// 	// return res.status(200).download( file );
 
-		res.set('Content-Type', document.fileType);
-    	res.set('Content-Disposition', 'attachment; filename="' + document.fileName +  '"');
+	// 	res.set('Content-Type', document.fileType);
+ //    	res.set('Content-Disposition', 'attachment; filename="' + document.fileName +  '"');
 
-    	var readstream = gridfs.createReadStream({filename:docId});
+ //    	var readstream = gridfs.createReadStream({filename:docId});
 
-    	readstream.on("error", function(err) { 
-        	res.end();
-    	});
-    	readstream.pipe(res);
-	});
+ //    	readstream.on("error", function(err) { 
+ //        	res.end();
+ //    	});
+ //    	readstream.pipe(res);
+	// });
 
-	
-	
+	return res.status(200).send(document.filename);
 });
 
 
 router.get("/test", async function(req,res){
 	console.log('*** arived in get db/test ***');
 
-	const newDoc = await new Document({docId: '420'})
-	.save();
-
-	console.log('newDoc: ' + newDoc);
-
-	Document.find(function (err, docs) {
-		if (err) return console.error(err);
-		// console.log('all docs:' + docs);
-	});
+	console.log('hash: ' + crypto.createHash('sha256').update('password').digest('hex'));
+	console.log('hash: ' + crypto.createHash('sha256').update('password').digest('hex'));
 
 	console.log('*** ended get db/test ***');
-	return res.status(200).send("hi");
+	return res.status(200);
 
 });
+
+router.post("/test/:argument", async function(req,res){
+
+	const form = new formidable.IncomingForm();
+    
+    form.parse(req, async function(err, fields) {
+    	console.log("pw: ",fields);
+		const hash1 = crypto.createHash('sha256').update('password').digest('hex');
+		const hash2 = crypto.createHash('sha256').update(fields.password).digest('hex');
+		console.log('hash: ' + hash1 );
+		console.log('hash: ' + hash2 );
+		console.log( hash1 == hash2 );
+
+		return res.status(200).send(hash1 == hash2);
+	});
+});
+
+router.post("/file/:documentCode", async function(req,res){
+	console.log('*** arived in get db/file ***');
+	const docId = req.params.documentCode;
+
+	const form = new formidable.IncomingForm();
+    
+    form.parse(req, async function(err, fields) {
+
+    	console.log("fields:",fields);
+
+		const document = await Document.findOne({docId:docId}, function (err, doc) {
+			if (err) return console.error(err);
+		});
+
+		const hash = crypto.createHash('sha256').update(fields.password).digest('hex');
+
+		if( hash == document.hashedKey ){
+			const gridfs = await Grid(connection.db, mongoose.mongo);
+
+			gridfs.findOne( {filename:docId}, function (err,file){
+				
+				if (err) return res.status(400).send(err);
+				else if (!file) {
+		        	return res.status(404).send('Error on the database looking for the file.');
+		    	}
+				// return res.status(200).download( file );
+
+				res.set('Content-Type', document.fileType);
+		    	res.set('Content-Disposition', 'attachment; filename="' + document.fileName +  '"');
+
+		    	var readstream = gridfs.createReadStream({filename:docId});
+
+		    	readstream.on("error", function(err) { 
+		        	res.end();
+		    	});
+		    	readstream.pipe(res);
+			});
+		}
+		else {
+			console.log('bad password');
+			return res.status(200).send('Bad Password');}
+	});
+});
+
 
 module.exports = router; 

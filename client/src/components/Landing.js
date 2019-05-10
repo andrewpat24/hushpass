@@ -49,7 +49,7 @@ class Landing extends Component{
 
     test = () =>{
 
-        axios.get("/api/db/upload/").then(res=>{
+        axios.get("/api/db/test/").then(res=>{
             console.log('sent');
         });
     }
