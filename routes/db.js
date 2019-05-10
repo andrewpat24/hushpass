@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const mongoose = require('mongoose');
-const Grid = require('gridfs-stream');
-const fs = require('fs');
+const gridfs = require('gridfs-stream');
+eval(`Grid.prototype.findOne = ${Grid.prototype.findOne.toString().replace('nextObject', 'next')}`);
 
 const formidable = require('formidable');
 const uuidv4 = require('uuid/v4');
