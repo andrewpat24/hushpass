@@ -5,8 +5,8 @@ class UploadForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedFile:null,
-			loaded:0
+            selectedFile: null,
+			loaded: 0
         }
     }
 
