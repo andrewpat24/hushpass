@@ -11,10 +11,20 @@ class Download extends Component{
         axios.post("/api/db/file/"+this.props.match.params.fileId, data, config)
 
         .then(res => { 
-            console.log('res: ',res);
+            console.log('res:',res);
+            const filename = res.headers["content-disposition"].split('=')[1].replace('"','').replace('"','');
+            // console.log('filename:',filename);
+
+            const url = window.URL.createObjectURL(new Blob([res.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download',filename);
+            document.body.appendChild(link);
+            link.click();
+
         })
         .catch(err => { 
-            console.log("Upload Failed\n"+err);
+            console.log("Download Failed\n"+err);
         })
 
     }
@@ -42,14 +52,12 @@ class Download extends Component{
                 <div> 
                     File Id: 
                     <input type='text' id='password' name='password' placeholder='password'></input>
-                    <button type="button" className="btn" onClick={this.onClickHandler}>Download</button>
+                    <button type="button" className="btn" download onClick={this.onClickHandler}>Download</button>
                     <p><button type="button" className="btn" onClick={this.test}>test</button></p>
                 </div>
             </div>
         )
     }
-
-    // axios.post("/api/db/upload/", data, config)
 }
 
 export default Download; 
