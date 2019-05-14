@@ -4,6 +4,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 eval(`Grid.prototype.findOne = ${Grid.prototype.findOne.toString().replace('nextObject', 'next')}`);
+const fs = require('fs');
 
 const formidable = require('formidable');
 const uuidv4 = require('uuid/v4');
@@ -40,7 +41,7 @@ router.post("/upload",  function(req, res) {
 			filename: docId
 		});
 		
-		gridfs.createReadStream( files['file'].path ).pipe( writestream );
+		fs.createReadStream( files['file'].path ).pipe( writestream );
   		
   		writestream.on('close',function(file){
   			console.log("file added to db");
