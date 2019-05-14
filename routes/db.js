@@ -4,28 +4,25 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 eval(`Grid.prototype.findOne = ${Grid.prototype.findOne.toString().replace('nextObject', 'next')}`);
+
 const fs = require('fs');
+const crypto = require('crypto');
 
 const formidable = require('formidable');
 const uuidv4 = require('uuid/v4');
-
 const Document = mongoose.model('documents'); 
+
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 
-
 router.post("/upload",  function(req, res) {
     
-    console.log('*** arived in post db/upload ***');
+    console.log('*** arrived in post db/upload ***');
     const form = new formidable.IncomingForm();
-    
     form.parse(req, async function(err, fields, files) {
-  		// console.log(fields);
-  		// console.log(files);
 
   		const docId = uuidv4();
-
   		const newDoc = await new Document({
   			docId: docId,
     		fileName: files['file'].name,
@@ -33,35 +30,42 @@ router.post("/upload",  function(req, res) {
     		hashedKey: fields.key,
     		userID: req.userID
   		})
-  		.save();
+		.save();
+		  
+		const cipher = crypto.createCipher('aes-256-cbc', /* TODO: Change this to password sent from user */'UserPassword');
+		const input = fs.createReadStream(files['file'].path);
 
-  		const gridfs = Grid(connection.db, mongoose.mongo);
+		const encryptedFilePath = files['file'].path + '.enc'; 
+		const output = fs.createWriteStream(encryptedFilePath);
 
-		const writestream = gridfs.createWriteStream( {
-			filename: docId
+		input.pipe(cipher).pipe(output);
+		
+		//FILE HAS BEEN SUCCESSFULLY ENCRYPTED 
+		output.on('finish', function() {
+			console.log('Encrypted file written to disk!');
+			const gridfs = Grid(connection.db, mongoose.mongo);
+
+			const writestream = gridfs.createWriteStream( {
+				filename: docId
+			});
+			
+			fs.createReadStream( encryptedFilePath ).pipe( writestream );
+			
+			writestream.on('close',function(file){
+				console.log("file added to db");
+			});
+			
+			return res.status(200)
+			.send(docId);
+
 		});
-		
-		fs.createReadStream( files['file'].path ).pipe( writestream );
-  		
-  		writestream.on('close',function(file){
-  			console.log("file added to db");
-  		});
-		
-  		
-  		return res.status(200)
-    	.send(docId);
+
 	});
 
-    
-    // const data = req.body;
-    // console.log(data);
-    // return res.status(500)
-    // .send({});
-    
 });
 
 router.get("/download/:documentCode", async function(req,res){
-	console.log('*** arived in get db/download ***');
+	console.log('*** arrived in get db/download ***');
 	const docId = req.params.documentCode;
 
 	const document = await Document.findOne({docId:docId}, function (err, doc) {
@@ -81,15 +85,14 @@ router.get("/download/:documentCode", async function(req,res){
 		res.set('Content-Type', document.fileType);
     	res.set('Content-Disposition', 'attachment; filename="' + document.fileName +  '"');
 
-    	var readstream = gridfs.createReadStream({filename:docId});
+		const cipher = crypto.createDecipher('aes-256-cbc', /* TODO: Change this to password sent from user */'UserPassword');
+		const readstream = gridfs.createReadStream({filename:docId});
+		readstream.pipe(cipher).pipe(res);
 
     	readstream.on("error", function(err) { 
         	res.end();
-    	});
-    	readstream.pipe(res);
+		});
 	});
-
-	
 	
 });
 
