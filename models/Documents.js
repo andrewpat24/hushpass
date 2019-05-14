@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
- var documentsSchema = new Schema({
+ const documentsSchema = new Schema({
     docId: {type:String,trim:true},
     data: {},
     fileName:  {type:String, trim:true, default:'file'},

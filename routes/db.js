@@ -32,7 +32,7 @@ router.post("/upload",  function(req, res) {
   		})
 		.save();
 		  
-		const cipher = crypto.createCipher('aes-256-cbc', process.env.CRYPTO_KEY);
+		const cipher = crypto.createCipher('aes-256-cbc', /* TODO: Change this to password sent from user */'UserPassword');
 		const input = fs.createReadStream(files['file'].path);
 
 		const encryptedFilePath = files['file'].path + '.enc'; 
@@ -85,15 +85,14 @@ router.get("/download/:documentCode", async function(req,res){
 		res.set('Content-Type', document.fileType);
     	res.set('Content-Disposition', 'attachment; filename="' + document.fileName +  '"');
 
-    	var readstream = gridfs.createReadStream({filename:docId});
+		const cipher = crypto.createDecipher('aes-256-cbc', /* TODO: Change this to password sent from user */'UserPassword');
+		const readstream = gridfs.createReadStream({filename:docId});
+		readstream.pipe(cipher).pipe(res);
 
     	readstream.on("error", function(err) { 
         	res.end();
-    	});
-    	readstream.pipe(res);
+		});
 	});
-
-	
 	
 });
 
