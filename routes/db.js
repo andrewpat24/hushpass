@@ -1,137 +1,146 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const mongoose = require('mongoose');
-const Grid = require('gridfs-stream');
-eval(`Grid.prototype.findOne = ${Grid.prototype.findOne.toString().replace('nextObject', 'next')}`);
+const mongoose = require("mongoose");
+const Grid = require("gridfs-stream");
+eval(
+  `Grid.prototype.findOne = ${Grid.prototype.findOne
+    .toString()
+    .replace("nextObject", "next")}`
+);
 
-const fs = require('fs');
-const crypto = require('crypto');
+const fs = require("fs");
+const crypto = require("crypto");
 
-const formidable = require('formidable');
-const uuidv4 = require('uuid/v4');
-const Document = mongoose.model('documents'); 
+const formidable = require("formidable");
+const uuidv4 = require("uuid/v4");
+const Document = mongoose.model("documents");
 
 mongoose.Promise = global.Promise;
 const connection = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 
-router.post("/upload",  function(req, res) {
-    
-    const form = new formidable.IncomingForm();
-    form.parse(req, async function(err, fields, files) {
+const moment = require("moment");
 
-  		const docId = uuidv4();
-  		const newDoc = await new Document({
-  			docId: docId,
-    		fileName: files['file'].name,
-    		fileType: files['file'].type,
-    		hashedKey: crypto.createHash('sha256').update(fields.key).digest('hex'),
-    		userID: req.userID
-  		})
-		.save();
-		  
-		const cipher = crypto.createCipher('aes-256-cbc', fields.key);
-		const input = fs.createReadStream(files['file'].path);
+router.post("/upload", function(req, res) {
+  const form = new formidable.IncomingForm();
+  form.parse(req, async function(err, fields, files) {
+    const docId = uuidv4();
+    const newDoc = await new Document({
+      docId: docId,
+      fileName: files["file"].name,
+      fileType: files["file"].type,
+      hashedKey: crypto
+        .createHash("sha256")
+        .update(fields.key)
+        .digest("hex"),
+      userID: req.userID,
+      maxDownloads: fields.downloads ? fields.downloads : 1,
+      expirationDate: fields.expiration
+        ? moment().add(fields.expiration, "d")
+        : moment().add(1, "d")
+    }).save();
 
-		const encryptedFilePath = files['file'].path + '.enc'; 
-		const output = fs.createWriteStream(encryptedFilePath);
+    const cipher = crypto.createCipher("aes-256-cbc", fields.key);
+    const input = fs.createReadStream(files["file"].path);
 
-		input.pipe(cipher).pipe(output);
+    const encryptedFilePath = files["file"].path + ".enc";
+    const output = fs.createWriteStream(encryptedFilePath);
 
-		//FILE HAS BEEN SUCCESSFULLY ENCRYPTED 
-		output.on('finish', function() {
-			console.log('Encrypted file written to disk!');
-			const gridfs = Grid(connection.db, mongoose.mongo);
+    input.pipe(cipher).pipe(output);
 
-			const writestream = gridfs.createWriteStream( {
-				filename: docId
-			});
-			
-			fs.createReadStream( encryptedFilePath ).pipe( writestream );
-			
-			writestream.on('close',function(file){
-				console.log("file added to db");
-			});
-			writestream.on("error", function(err) { 
-	    		console.error('error');
-    			res.status(500).end();
-			});
-			
-			return res.status(200)
-			.send(docId);
+    //FILE HAS BEEN SUCCESSFULLY ENCRYPTED
+    output.on("finish", function() {
+      console.log("Encrypted file written to disk!");
+      const gridfs = Grid(connection.db, mongoose.mongo);
 
-		});
+      const writestream = gridfs.createWriteStream({
+        filename: docId
+      });
 
-	});
+      fs.createReadStream(encryptedFilePath).pipe(writestream);
 
+      writestream.on("close", function(file) {
+        console.log("file added to db");
+      });
+      writestream.on("error", function(err) {
+        console.error("error");
+        res.status(500).end();
+      });
+
+      return res.status(200).send(docId);
+    });
+  });
 });
 
-router.get("/:documentCode", async function(req,res){
+router.get("/:documentCode", async function(req, res) {
+  const docId = req.params.documentCode;
+  const document = await Document.findOne({ docId: docId }, function(err, doc) {
+    if (err) {
+      // console.error(err);
+      res.status(404).send("Error getting Document from Database");
+    }
+  });
 
-	const docId = req.params.documentCode;
-	const document = await Document.findOne({docId:docId}, function (err, doc) {
-		if (err) {
-			// console.error(err);
-			res.status(404).send('Error getting Document from Database');
-		}
-	});
-
-	res.status(200).send({
-		fileName:document.fileName,
-		fileType:document.fileType,
-		expirationDate: document.expirationDate
-	});
+  res.status(200).send({
+    fileName: document.fileName,
+    fileType: document.fileType,
+    expirationDate: moment(document.expirationDate).format("dddd, MMMM Do YYYY")
+  });
 });
 
-router.post("/file/:documentCode", async function(req,res){
-	// console.log('*** arived in get db/file ***');
-	// console.log('body:',req.body);
-	const docId = req.params.documentCode;
+router.post("/file/:documentCode", async function(req, res) {
+  // console.log('*** arived in get db/file ***');
+  // console.log('body:',req.body);
+  const docId = req.params.documentCode;
 
-	const form = new formidable.IncomingForm();
-    
-    form.parse(req, async function(err, fields) {
+  const form = new formidable.IncomingForm();
 
-		const document = await Document.findOne({docId:docId}, function (err, doc) {
-			if (err) return console.error(err);
-		});
+  form.parse(req, async function(err, fields) {
+    const document = await Document.findOne({ docId: docId }, function(
+      err,
+      doc
+    ) {
+      if (err) return console.error(err);
+    });
 
-		const hash = crypto
-						.createHash('sha256')
-						.update(fields.password)
-						.digest('hex');
+    const hash = crypto
+      .createHash("sha256")
+      .update(fields.password)
+      .digest("hex");
 
-		if( hash != document.hashedKey ) return res.status(401).send('Bad password');
+    if (hash != document.hashedKey) return res.status(401).send("Bad password");
 
-		const gridfs = await Grid(connection.db, mongoose.mongo);
+    const gridfs = await Grid(connection.db, mongoose.mongo);
 
-		gridfs.findOne( {filename:docId}, function (err,file){
-			
-			if (err) return res.status(400).send(err);
-			else if (!file) {
-	        	return res.status(404).send('Error on the database looking for the file.');
-	    	}
+    gridfs.findOne({ filename: docId }, function(err, file) {
+      if (err) return res.status(400).send(err);
+      else if (!file) {
+        return res
+          .status(404)
+          .send("Error on the database looking for the file.");
+      }
 
-			res.set('Content-Type', document.fileType);
-	    	res.set('Content-Disposition', 'attachment; filename="' + document.fileName +  '"');
+      res.set("Content-Type", document.fileType);
+      res.set(
+        "Content-Disposition",
+        'attachment; filename="' + document.fileName + '"'
+      );
 
-	    	
-	    	const cipher = crypto.createDecipher('aes-256-cbc', fields.password);
-			const readstream = gridfs.createReadStream({filename:docId});
-			readstream.pipe(cipher).pipe(res);
+      const cipher = crypto.createDecipher("aes-256-cbc", fields.password);
+      const readstream = gridfs.createReadStream({ filename: docId });
+      readstream.pipe(cipher).pipe(res);
 
-    		readstream.on("error", function(err) { 
-        		res.end();
-			});
+      readstream.on("error", function(err) {
+        res.end();
+      });
 
-	    	readstream.on("error", function(err) { 
-	    		console.error('error');
-    			res.end();
-			});
-		});
-	});
+      readstream.on("error", function(err) {
+        console.error("error");
+        res.end();
+      });
+    });
+  });
 });
 
-
-module.exports = router; 
+module.exports = router;
