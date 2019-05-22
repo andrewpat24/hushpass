@@ -66,9 +66,9 @@ class Download extends Component {
             name="password"
             placeholder="password"
           />
-          <text id="pw-error" className="alert alert-danger">
+          <p id="pw-error" className="alert alert-danger">
             <font color="red">{this.state.pw}</font>
-          </text>
+          </p>
           <br />
           <br />
           <button

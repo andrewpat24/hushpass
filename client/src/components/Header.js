@@ -1,13 +1,14 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, {
+  Component
+  //  Fragment
+} from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 class Header extends Component {
-
-    renderContent() {
-        let isLoggedIn = !!this.props.auth
-    
-        /*
+  renderContent() {
+    // let isLoggedIn = !!this.props.auth
+    /*
         switch (isLoggedIn) {
             case false: 
                 return (
@@ -23,35 +24,28 @@ class Header extends Component {
                 );
         }
         */
+  }
 
-    }
+  render() {
+    let AuthState = this.props.auth;
+    return (
+      <nav>
+        <div className="nav-wrapper">
+          <Link to={AuthState ? "/" : "/"} className="left brand-logo">
+            HushPass
+          </Link>
 
-    render () {
- 
-        let AuthState = this.props.auth;
-        return (
-            <nav>
-                <div className="nav-wrapper" >
-                        
-                    <Link to={AuthState ? '/' : '/'} className="left brand-logo">
-                        HushPass
-                    </Link>
-                    
-                    <ul className="right">
-                        
-                        { this.renderContent() }
-                        
-                    </ul>
-                </div>
-            </nav>
-        )
-    }
+          <ul className="right">{this.renderContent()}</ul>
+        </div>
+      </nav>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return { 
-        auth: state.auth
-    };
-} 
+  return {
+    auth: state.auth
+  };
+}
 
 export default connect(mapStateToProps)(Header);
