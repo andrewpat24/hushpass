@@ -75,41 +75,15 @@ class UploadForm extends Component {
     });
   };
 
-  renderForm() {
-    const Upload = (
-      <div id="body">
-        <form>
-          <input
-            type="text"
-            name="key"
-            id="key"
-            placeholder="Your Secret Key"
-          />
-          <input
-            type="file"
-            name="file"
-            className="form-control"
-            onChange={this.onChangeHandler}
-          />
-          <button type="button" className="btn" onClick={this.onClickHandler}>
-            Upload
-          </button>
-        </form>
-      </div>
-    );
-
-    if (this.state.fileId) {
-      return Confirmation;
-    } else {
-      return Upload;
-    }
-  }
-
   render() {
     return (
       <section component="UploadForm">
         {!this.state.fileId ? (
           <div id="body">
+            <div>
+              <h1>HushPass</h1>
+              <span>Share Files Securely.</span>
+            </div>
             <br />
             <br />
             <form>
