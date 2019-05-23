@@ -1,0 +1,42 @@
+/* GLOBAL STYLE ATTRIBUTES */
+body {
+  background-color: #98c9e6;
+}
+
+link {
+  text-decoration: "none";
+}
+
+.app-container {
+  padding: 0% 10% 0% 10%;
+}
+
+/* GLOBAL FLEX ATTRIBUTES */
+.left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.row {
+  display: flex;
+  flex-direction: row wrap;
+}
+
+.col-spacer {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+/* COLORS */
+.brand-dark {
+  color: #4a3b22;
+}
+
+.brand-white {
+  color: #fafcfe;
+}

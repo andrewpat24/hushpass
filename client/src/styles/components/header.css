@@ -1,0 +1,19 @@
+.header-container {
+  padding: 1%;
+}
+
+.header {
+  justify-content: space-between;
+}
+
+.header ul {
+  list-style-type: none;
+}
+
+.header .logo {
+  font-size: 2em;
+}
+
+.nav-item {
+  font-size: 1.5em;
+}

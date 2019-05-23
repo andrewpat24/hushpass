@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import UploadForm from "./UploadForm";
-
 class Landing extends Component {
   render() {
     return (
