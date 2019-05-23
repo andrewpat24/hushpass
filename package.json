@@ -31,7 +31,6 @@
     "formidable": "^1.2.1",
     "gridfs-stream": "^1.1.1",
     "lodash": "^4.17.11",
-    "materialize-css": "^1.0.0",
     "moment": "^2.24.0",
     "mongoose": "^5.4.13",
     "netlify-lambda": "^1.4.5",
