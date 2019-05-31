@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import axios from "axios";
 import Confirmation from "./Confirmation";
 
+// Styles
+import "../styles/base.css";
+import "../styles/components/upload.css";
+
 class UploadForm extends Component {
   constructor(props) {
     super(props);
@@ -80,23 +84,21 @@ class UploadForm extends Component {
       <section component="UploadForm">
         {!this.state.fileId ? (
           <div id="body">
-            <div>
-              <h1>HushPass</h1>
-              <span>Share Files Securely.</span>
+            <div className="header">
+              <h1 className="header-text">HushPass</h1>
+              <span className="header-description">Share Files Securely.</span>
             </div>
-            <br />
-            <br />
-            <form>
-              <input
-                type="text"
-                name="key"
-                id="key"
-                placeholder="Your Secret Key"
-              />
-              <br />
-              <br />
-              <label>
-                Days until expiration
+
+            <div className="uploadForm-container">
+              <div className="uploadForm">
+                <input
+                  type="text"
+                  name="key"
+                  id="key"
+                  placeholder="Your Secret Key"
+                />
+
+                <label>Days until expiration</label>
                 <input
                   type="number"
                   min="1"
@@ -104,11 +106,8 @@ class UploadForm extends Component {
                   name="expiration"
                   id="expiration"
                 />
-              </label>
-              <br />
-              <br />
-              <label>
-                Number of Downloads
+
+                <label>Number of Downloads</label>
                 <input
                   type="number"
                   min="1"
@@ -116,20 +115,16 @@ class UploadForm extends Component {
                   name="downloads"
                   id="downloads"
                 />
-              </label>
-              <br />
-              <br />
-              <input
-                type="file"
-                name="file"
-                className="form-control"
-                onChange={this.onChangeHandler}
-              />
-              <br />
-              <br />
-              <label>
-                <font color="#ff0000">{this.state.error}</font>
-                <br />
+
+                <input
+                  type="file"
+                  name="file"
+                  className="form-control"
+                  onChange={this.onChangeHandler}
+                />
+                <label>
+                  <font color="#ff0000">{this.state.error}</font>
+                </label>
                 <button
                   type="button"
                   className="btn"
@@ -138,10 +133,8 @@ class UploadForm extends Component {
                 >
                   Upload
                 </button>
-              </label>
-              <br />
-            </form>
-            <br />
+              </div>
+            </div>
             <button type="button" className="btn" onClick={this.test}>
               test
             </button>
