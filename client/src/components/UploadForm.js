@@ -91,7 +91,7 @@ class UploadForm extends Component {
 
             <div className="uploadForm-container">
               <div className="uploadForm">
-                <div className="row">
+                <div className="row center">
                   <input
                     type="text"
                     name="key"

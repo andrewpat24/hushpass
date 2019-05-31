@@ -4,6 +4,8 @@
 
 .header {
   justify-content: space-between;
+  padding-bottom: 3%;
+  text-align: center;
 }
 
 .header ul {
@@ -12,6 +14,16 @@
 
 .header .logo {
   font-size: 2em;
+}
+
+.header-text {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.header-description {
+  font-size: 1.2em;
+  font-style: oblique;
 }
 
 .nav-item {
