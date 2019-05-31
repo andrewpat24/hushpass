@@ -91,31 +91,35 @@ class UploadForm extends Component {
 
             <div className="uploadForm-container">
               <div className="uploadForm">
-                <input
-                  type="text"
-                  name="key"
-                  id="key"
-                  placeholder="Your Secret Key"
-                />
+                <div className="row">
+                  <input
+                    type="text"
+                    name="key"
+                    id="key"
+                    placeholder="Your Secret Key"
+                  />
+                </div>
+                <div className="row">
+                  <label>Days until expiration</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="7"
+                    name="expiration"
+                    id="expiration"
+                  />
+                </div>
 
-                <label>Days until expiration</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="7"
-                  name="expiration"
-                  id="expiration"
-                />
-
-                <label>Number of Downloads</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="100"
-                  name="downloads"
-                  id="downloads"
-                />
-
+                <div className="row">
+                  <label>Number of Downloads</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    name="downloads"
+                    id="downloads"
+                  />
+                </div>
                 <input
                   type="file"
                   name="file"

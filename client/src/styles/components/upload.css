@@ -1,0 +1,7 @@
+.uploadForm-container {
+  display: flex;
+}
+
+.uploadForm {
+  flex-direction: row;
+}
