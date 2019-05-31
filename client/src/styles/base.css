@@ -27,11 +27,6 @@ link {
   flex-direction: row wrap;
 }
 
-.col-spacer {
-  padding-left: 10%;
-  padding-right: 10%;
-}
-
 /* COLORS */
 .brand-dark {
   color: #4a3b22;
