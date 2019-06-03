@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import ConfirmationModal from "./ConfirmationModal";
+import CopyToClipboard from "./Utils/CopyToClipboard";
 
 // Styles
 import "../styles/base.css";
@@ -138,14 +138,20 @@ class UploadForm extends Component {
                 />
               </div>
               <div className="row center">
-                <label
-                  for="modal_1"
-                  className="button"
-                  id="upload-btn"
-                  onClick={this.onClickHandler}
-                >
-                  Upload
-                </label>
+                {this.state.fileId ? (
+                  <label for="modal_1" className="button" id="upload-btn">
+                    Get file path
+                  </label>
+                ) : (
+                  <label
+                    for="modal_1"
+                    className="button"
+                    id="upload-btn"
+                    onClick={this.onClickHandler}
+                  >
+                    Upload
+                  </label>
+                )}
 
                 {this.state.fileId && (
                   <div class="modal">
@@ -159,9 +165,15 @@ class UploadForm extends Component {
                         </label>
                       </header>
                       <section className="content">
-                        We have a special offer for you. I am sure you will love
-                        it! However this does look spammy...
-                        localhost:3000/download/{this.state.fileId}
+                        Your file has been uploaded.
+                        {
+                          <CopyToClipboard
+                            className="btn"
+                            text={`${window.location.href}download/${
+                              this.state.fileId
+                            }`}
+                          />
+                        }
                       </section>
                       <footer>
                         <label for="modal_1" className="button dangerous">
