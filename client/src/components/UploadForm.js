@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import Dropzone from "react-dropzone";
 import Confirmation from "./Confirmation";
 
 class UploadForm extends Component {
@@ -22,6 +23,13 @@ class UploadForm extends Component {
     });
   };
 
+  async onDropZone(acceptedFiles) {
+    await this.setState({
+      selectedFile: acceptedFiles[0]
+    });
+    await console.log("file set:", this.state);
+  }
+
   onClickHandler = () => {
     if (!this.state.selectedFile) {
       this.setState({ error: "Please include a file" });
@@ -35,7 +43,12 @@ class UploadForm extends Component {
 
     const data = new FormData();
 
-    data.append("file", this.state.selectedFile, this.state.selectedFile.name);
+    data.append(
+      "file",
+      this.state.selectedFile[0],
+      this.state.selectedFile[0].name
+    );
+    data.append("file", this.state.selectedFile);
     data.append("key", document.getElementById("key").value);
     data.append(
       "downloads",
@@ -81,12 +94,32 @@ class UploadForm extends Component {
         {!this.state.fileId ? (
           <div id="body">
             <div>
-              <h1>HushPass</h1>
-              <span>Share Files Securely.</span>
+              <span> Share Files Securely. </span>
             </div>
             <br />
             <br />
             <form>
+              <Dropzone
+                onDrop={acceptedFiles => this.onDropZone(acceptedFiles)}
+              >
+                {({ getRootProps, getInputProps }) => (
+                  <section>
+                    <div {...getRootProps()}>
+                      <input {...getInputProps()} />
+                      {!this.state.selectedFile ? (
+                        <p className="dropzone">
+                          Drag and drop a file here, or click here to select a
+                          file
+                        </p>
+                      ) : (
+                        <p className="dropzone">
+                          File Set: {this.state.selectedFile.name}
+                        </p>
+                      )}
+                    </div>
+                  </section>
+                )}
+              </Dropzone>
               <input
                 type="text"
                 name="key"
@@ -96,8 +129,8 @@ class UploadForm extends Component {
               <br />
               <br />
               <label>
-                Days until expiration
                 <input
+                  placeholder="Days until expiration"
                   type="number"
                   min="1"
                   max="7"
@@ -108,8 +141,8 @@ class UploadForm extends Component {
               <br />
               <br />
               <label>
-                Number of Downloads
                 <input
+                  placeholder="Number of Downloads"
                   type="number"
                   min="1"
                   max="100"
@@ -119,17 +152,16 @@ class UploadForm extends Component {
               </label>
               <br />
               <br />
-              <input
+              {/* <input
                 type="file"
                 name="file"
                 className="form-control"
                 onChange={this.onChangeHandler}
               />
               <br />
-              <br />
+              <br /> */}
               <label>
-                <font color="#ff0000">{this.state.error}</font>
-                <br />
+                <font color="#ff0000"> {this.state.error} </font> <br />
                 <button
                   type="button"
                   className="btn"
