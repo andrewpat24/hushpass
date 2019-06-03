@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import Confirmation from "./Confirmation";
+import ConfirmationModal from "./ConfirmationModal";
 
 // Styles
 import "../styles/base.css";
@@ -82,82 +82,102 @@ class UploadForm extends Component {
   render() {
     return (
       <section component="UploadForm">
-        {!this.state.fileId ? (
-          <div id="body">
-            <div className="header">
-              <h1 className="header-text">
-                <span className="brand-dark">Hush</span>
-                <span className="brand-white">Hush</span> Pass
-              </h1>
-              <span className="header-description">Share Files Securely.</span>
-            </div>
+        <div id="body">
+          <div className="header">
+            <h1 className="header-text">
+              <span className="brand-dark">Hush</span>
+              <span className="brand-white">Hush</span> Pass
+            </h1>
+            <span className="header-description">Share Files Securely.</span>
+          </div>
 
-            <div className="uploadForm-container">
-              <div className="uploadForm">
-                <div className="form-row center">
-                  <input
-                    type="text"
-                    name="key"
-                    id="key"
-                    placeholder="Your Secret Key"
-                    className="row"
-                  />
-                </div>
-                <div className="form-row">
-                  <label className="row">Days until expiration</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="7"
-                    name="expiration"
-                    id="expiration"
-                    className="row num-input"
-                  />
-                </div>
+          <div className="uploadForm-container">
+            <div className="uploadForm">
+              <div className="form-row center">
+                <input
+                  type="text"
+                  name="key"
+                  id="key"
+                  placeholder="Your Secret Key"
+                  className="row"
+                />
+              </div>
+              <div className="form-row">
+                <label className="row">Days until expiration</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="7"
+                  name="expiration"
+                  id="expiration"
+                  className="row num-input"
+                />
+              </div>
 
-                <div className="form-row">
-                  <label className="row">Number of Downloads</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    name="downloads"
-                    id="downloads"
-                    className="row num-input"
-                  />
-                </div>
-                <div className="form-row" id="file-select">
-                  <label className="row">
-                    <font color="#ff0000">{this.state.error}</font>
-                  </label>
-                  <input
-                    type="file"
-                    name="file"
-                    className="form-control"
-                    onChange={this.onChangeHandler}
-                    className="row"
-                  />
-                </div>
-                <div className="row center">
-                  <button
-                    type="button"
-                    className="btn"
-                    id="upload-btn"
-                    name="upload"
-                    onClick={this.onClickHandler}
-                  >
-                    Upload
-                  </button>
-                </div>
+              <div className="form-row">
+                <label className="row">Number of Downloads</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  name="downloads"
+                  id="downloads"
+                  className="row num-input"
+                />
+              </div>
+              <div className="form-row" id="file-select">
+                <label className="row">
+                  <font color="#ff0000">{this.state.error}</font>
+                </label>
+                <input
+                  type="file"
+                  name="file"
+                  className="form-control"
+                  onChange={this.onChangeHandler}
+                  className="row"
+                />
+              </div>
+              <div className="row center">
+                <label
+                  for="modal_1"
+                  className="button"
+                  id="upload-btn"
+                  onClick={this.onClickHandler}
+                >
+                  Upload
+                </label>
+
+                {this.state.fileId && (
+                  <div class="modal">
+                    <input id="modal_1" type="checkbox" />
+                    <label for="modal_1" className="overlay" />
+                    <article>
+                      <header>
+                        <h3>File Uploaded!</h3>
+                        <label for="modal_1" className="close">
+                          &times;
+                        </label>
+                      </header>
+                      <section className="content">
+                        We have a special offer for you. I am sure you will love
+                        it! However this does look spammy...
+                        localhost:3000/download/{this.state.fileId}
+                      </section>
+                      <footer>
+                        <label for="modal_1" className="button dangerous">
+                          Close
+                        </label>
+                      </footer>
+                    </article>
+                  </div>
+                )}
               </div>
             </div>
-            <button type="button" className="btn" onClick={this.test}>
-              test
-            </button>
           </div>
-        ) : (
-          <Confirmation fileId={this.state.fileId} />
-        )}
+          <button type="button" className="btn" onClick={this.test}>
+            test
+          </button>
+        </div>
       </section>
     );
   }
