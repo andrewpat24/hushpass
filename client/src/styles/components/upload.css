@@ -1,0 +1,28 @@
+.uploadForm-container {
+  display: flex;
+}
+
+.uploadForm {
+  flex-direction: row;
+  width: 100%;
+}
+
+input#key {
+  width: 40%;
+}
+
+.form-row {
+  padding-bottom: 2%;
+}
+
+.num-input {
+  width: 20%;
+}
+
+#file-select {
+  width: 20%;
+}
+
+#upload-btn {
+  width: 20%;
+}

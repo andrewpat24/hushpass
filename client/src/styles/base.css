@@ -22,9 +22,13 @@ link {
   justify-content: flex-end;
 }
 
+.center {
+  display: flex;
+  justify-content: center;
+}
+
 .row {
   display: flex;
-  flex-direction: row wrap;
 }
 
 /* COLORS */

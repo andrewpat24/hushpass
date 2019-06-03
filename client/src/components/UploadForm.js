@@ -85,54 +85,70 @@ class UploadForm extends Component {
         {!this.state.fileId ? (
           <div id="body">
             <div className="header">
-              <h1 className="header-text">HushPass</h1>
+              <h1 className="header-text">
+                <span className="brand-dark">Hush</span>
+                <span className="brand-white">Hush</span> Pass
+              </h1>
               <span className="header-description">Share Files Securely.</span>
             </div>
 
             <div className="uploadForm-container">
               <div className="uploadForm">
-                <input
-                  type="text"
-                  name="key"
-                  id="key"
-                  placeholder="Your Secret Key"
-                />
+                <div className="form-row center">
+                  <input
+                    type="text"
+                    name="key"
+                    id="key"
+                    placeholder="Your Secret Key"
+                    className="row"
+                  />
+                </div>
+                <div className="form-row">
+                  <label className="row">Days until expiration</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="7"
+                    name="expiration"
+                    id="expiration"
+                    className="row num-input"
+                  />
+                </div>
 
-                <label>Days until expiration</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="7"
-                  name="expiration"
-                  id="expiration"
-                />
-
-                <label>Number of Downloads</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="100"
-                  name="downloads"
-                  id="downloads"
-                />
-
-                <input
-                  type="file"
-                  name="file"
-                  className="form-control"
-                  onChange={this.onChangeHandler}
-                />
-                <label>
-                  <font color="#ff0000">{this.state.error}</font>
-                </label>
-                <button
-                  type="button"
-                  className="btn"
-                  name="upload"
-                  onClick={this.onClickHandler}
-                >
-                  Upload
-                </button>
+                <div className="form-row">
+                  <label className="row">Number of Downloads</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    name="downloads"
+                    id="downloads"
+                    className="row num-input"
+                  />
+                </div>
+                <div className="form-row" id="file-select">
+                  <label className="row">
+                    <font color="#ff0000">{this.state.error}</font>
+                  </label>
+                  <input
+                    type="file"
+                    name="file"
+                    className="form-control"
+                    onChange={this.onChangeHandler}
+                    className="row"
+                  />
+                </div>
+                <div className="row center">
+                  <button
+                    type="button"
+                    className="btn"
+                    id="upload-btn"
+                    name="upload"
+                    onClick={this.onClickHandler}
+                  >
+                    Upload
+                  </button>
+                </div>
               </div>
             </div>
             <button type="button" className="btn" onClick={this.test}>
