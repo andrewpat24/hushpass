@@ -26,6 +26,12 @@ class UploadForm extends Component {
     });
   };
 
+  onClearCurrentFile = () => {
+    this.setState({
+      fileId: null
+    });
+  };
+
   onClickHandler = () => {
     if (!this.state.selectedFile) {
       this.setState({ error: "Please include a file" });
@@ -139,9 +145,19 @@ class UploadForm extends Component {
               </div>
               <div className="row center">
                 {this.state.fileId ? (
-                  <label for="modal_1" className="button" id="upload-btn">
-                    Get file path
-                  </label>
+                  <div>
+                    <label for="modal_1" className="button row ">
+                      Get file path
+                    </label>
+
+                    <label
+                      for="modal_1"
+                      className="button row"
+                      onClick={this.onClearCurrentFile}
+                    >
+                      Upload another file
+                    </label>
+                  </div>
                 ) : (
                   <label
                     for="modal_1"
