@@ -92,7 +92,7 @@ class UploadForm extends Component {
           <div className="header">
             <h1 className="header-text">
               <span className="brand-dark">Hush</span>
-              <span className="brand-white">Hush</span> Pass
+              <span className="brand-white">Hush</span>
             </h1>
             <span className="header-description">Share Files Securely.</span>
           </div>
@@ -146,8 +146,12 @@ class UploadForm extends Component {
               <div className="row center">
                 {this.state.fileId ? (
                   <div>
-                    <label for="modal_1" className="button row ">
-                      Get file path
+                    <label
+                      for="modal_1"
+                      className="button row"
+                      id="getFilePathBtn"
+                    >
+                      <div>Get file path</div>
                     </label>
 
                     <label
@@ -175,21 +179,36 @@ class UploadForm extends Component {
                     <label for="modal_1" className="overlay" />
                     <article>
                       <header>
-                        <h3>File Uploaded!</h3>
+                        <h3>Upload Complete</h3>
                         <label for="modal_1" className="close">
                           &times;
                         </label>
                       </header>
                       <section className="content">
-                        Your file has been uploaded.
-                        {
-                          <CopyToClipboard
-                            className="btn"
-                            text={`${window.location.href}download/${
-                              this.state.fileId
-                            }`}
-                          />
-                        }
+                        <div className="row flex three demo">
+                          <div className="half">
+                            Your file has been uploaded!
+                            {
+                              <CopyToClipboard
+                                className="btn"
+                                text={`${window.location.href}download/${
+                                  this.state.fileId
+                                }`}
+                              />
+                            }
+                          </div>
+                          <div>
+                            <div className="row form-row">
+                              Your file's been encrypted and stored in our
+                              database. Only you and the people you share your
+                              password with are capable of seeing your file.
+                            </div>
+                            <div className="row">
+                              Keep track of your password! The recipient will
+                              need it to download the file.
+                            </div>
+                          </div>
+                        </div>
                       </section>
                       <footer>
                         <label for="modal_1" className="button dangerous">

@@ -26,3 +26,11 @@ input#key {
 #upload-btn {
   width: 20%;
 }
+
+#getFilePathBtn div {
+  width: 100%;
+}
+
+.modal > input:checked ~ .overlay ~ * {
+  width: 80%;
+}

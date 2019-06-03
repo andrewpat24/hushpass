@@ -23,13 +23,14 @@ class CopyToClipboard extends React.Component {
     }
   }
   render() {
-    const { label } = this.props;
+    const { label, text } = this.props;
     const attr = {
       style: this.props.style,
       className: this.props.className
     };
     return (
       <p>
+        <input value={text} readOnly onClick={() => this.copy()} />
         <button className="btn" onClick={() => this.copy()} {...attr}>
           {label}
         </button>
