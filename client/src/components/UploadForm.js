@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import Confirmation from "./Confirmation";
+import CopyToClipboard from "./Utils/CopyToClipboard";
 
 // Styles
 import "../styles/base.css";
@@ -23,6 +23,12 @@ class UploadForm extends Component {
 
     await this.setState({
       selectedFile: file
+    });
+  };
+
+  onClearCurrentFile = () => {
+    this.setState({
+      fileId: null
     });
   };
 
@@ -82,82 +88,143 @@ class UploadForm extends Component {
   render() {
     return (
       <section component="UploadForm">
-        {!this.state.fileId ? (
-          <div id="body">
-            <div className="header">
-              <h1 className="header-text">
-                <span className="brand-dark">Hush</span>
-                <span className="brand-white">Hush</span> Pass
-              </h1>
-              <span className="header-description">Share Files Securely.</span>
-            </div>
+        <div id="body">
+          <div className="header">
+            <h1 className="header-text">
+              <span className="brand-dark">Hush</span>
+              <span className="brand-white">Hush</span>
+            </h1>
+            <span className="header-description">Share Files Securely.</span>
+          </div>
 
-            <div className="uploadForm-container">
-              <div className="uploadForm">
-                <div className="form-row center">
-                  <input
-                    type="text"
-                    name="key"
-                    id="key"
-                    placeholder="Your Secret Key"
-                    className="row"
-                  />
-                </div>
-                <div className="form-row">
-                  <label className="row">Days until expiration</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="7"
-                    name="expiration"
-                    id="expiration"
-                    className="row num-input"
-                  />
-                </div>
+          <div className="uploadForm-container">
+            <div className="uploadForm">
+              <div className="form-row center">
+                <input
+                  type="text"
+                  name="key"
+                  id="key"
+                  placeholder="Your Secret Key"
+                  className="row"
+                />
+              </div>
+              <div className="form-row">
+                <label className="row">Days until expiration</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="7"
+                  name="expiration"
+                  id="expiration"
+                  className="row num-input"
+                />
+              </div>
 
-                <div className="form-row">
-                  <label className="row">Number of Downloads</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    name="downloads"
-                    id="downloads"
-                    className="row num-input"
-                  />
-                </div>
-                <div className="form-row" id="file-select">
-                  <label className="row">
-                    <font color="#ff0000">{this.state.error}</font>
-                  </label>
-                  <input
-                    type="file"
-                    name="file"
-                    className="form-control"
-                    onChange={this.onChangeHandler}
-                    className="row"
-                  />
-                </div>
-                <div className="row center">
-                  <button
-                    type="button"
-                    className="btn"
+              <div className="form-row">
+                <label className="row">Number of Downloads</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  name="downloads"
+                  id="downloads"
+                  className="row num-input"
+                />
+              </div>
+              <div className="form-row" id="file-select">
+                <label className="row">
+                  <font color="#ff0000">{this.state.error}</font>
+                </label>
+                <input
+                  type="file"
+                  name="file"
+                  className="form-control"
+                  onChange={this.onChangeHandler}
+                  className="row"
+                />
+              </div>
+              <div className="row center">
+                {this.state.fileId ? (
+                  <div>
+                    <label
+                      for="modal_1"
+                      className="button row"
+                      id="getFilePathBtn"
+                    >
+                      <div>Get file path</div>
+                    </label>
+
+                    <label
+                      for="modal_1"
+                      className="button row"
+                      onClick={this.onClearCurrentFile}
+                    >
+                      Upload another file
+                    </label>
+                  </div>
+                ) : (
+                  <label
+                    for="modal_1"
+                    className="button"
                     id="upload-btn"
-                    name="upload"
                     onClick={this.onClickHandler}
                   >
                     Upload
-                  </button>
-                </div>
+                  </label>
+                )}
+
+                {this.state.fileId && (
+                  <div class="modal">
+                    <input id="modal_1" type="checkbox" />
+                    <label for="modal_1" className="overlay" />
+                    <article>
+                      <header>
+                        <h3>Upload Complete</h3>
+                        <label for="modal_1" className="close">
+                          &times;
+                        </label>
+                      </header>
+                      <section className="content">
+                        <div className="row flex three demo">
+                          <div className="half">
+                            Your file has been uploaded!
+                            {
+                              <CopyToClipboard
+                                className="btn"
+                                text={`${window.location.href}download/${
+                                  this.state.fileId
+                                }`}
+                              />
+                            }
+                          </div>
+                          <div>
+                            <div className="row form-row">
+                              Your file's been encrypted and stored in our
+                              database. Only you and the people you share your
+                              password with are capable of seeing your file.
+                            </div>
+                            <div className="row">
+                              Keep track of your password! The recipient will
+                              need it to download the file.
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <footer>
+                        <label for="modal_1" className="button dangerous">
+                          Close
+                        </label>
+                      </footer>
+                    </article>
+                  </div>
+                )}
               </div>
             </div>
-            <button type="button" className="btn" onClick={this.test}>
-              test
-            </button>
           </div>
-        ) : (
-          <Confirmation fileId={this.state.fileId} />
-        )}
+          <button type="button" className="btn" onClick={this.test}>
+            test
+          </button>
+        </div>
       </section>
     );
   }
