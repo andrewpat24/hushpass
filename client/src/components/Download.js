@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 
+import Introduction from "./Introduction";
+
+// Styles
+import "../styles/base.css";
+import "../styles/components/download.css";
+
 class Download extends Component {
   constructor(props) {
     super(props);
@@ -48,44 +54,48 @@ class Download extends Component {
   render = () => {
     const successTemplate = (
       <div>
-        <h1>Download Page</h1>
-        <div>
-          File
-          <br />
-          Id: {this.props.match.params.fileId}
-          <br />
-          Name: {this.state.document.fileName}
-          <br />
-          Type: {this.state.document.fileType}
-          <br />
-          Expires: {this.state.document.expirationDate}
-          <br />
-          <input
-            type="text"
-            id="password"
-            name="password"
-            placeholder="password"
-          />
-          <p id="pw-error" className="alert alert-danger">
-            <font color="red">{this.state.pw}</font>
-          </p>
-          <br />
-          <br />
-          <button
-            type="button"
-            className="btn"
-            download
-            onClick={this.onClickHandler}
-          >
-            Download
-          </button>
-        </div>
+        <h1 className="center header-description">Your File Is Ready</h1>
+        <ul className="flex-container">
+          <li className="flex-item">
+            <div>
+              <div className="note ">
+                <p className="center">{this.state.document.fileName}</p>
+                <p>Type: {this.state.document.fileType}</p>
+                <p>Id: {this.props.match.params.fileId}</p>
+                <p>Expires: {this.state.document.expirationDate}</p>
+              </div>
+              <p className="center">
+                <input
+                  type="text"
+                  id="password"
+                  name="password"
+                  placeholder="Secret Key"
+                  className="secret"
+                />
+              </p>
+
+              <p id="pw-error" className="alert alert-danger center">
+                <font color="red">{this.state.pw}</font>
+              </p>
+              <p className="center">
+                <button
+                  type="button"
+                  className="btn"
+                  download
+                  onClick={this.onClickHandler}
+                >
+                  Download
+                </button>
+              </p>
+            </div>
+          </li>
+          <li className="flex-item">{Introduction}</li>
+        </ul>
       </div>
     );
 
     const failTemplate = (
       <div>
-        <h1>Download Page</h1>
         <div>
           File Not Found
           <br />

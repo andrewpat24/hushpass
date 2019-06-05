@@ -5,6 +5,7 @@
 .uploadForm {
   flex-direction: row;
   width: 100%;
+  padding: 10px;
 }
 
 input#key {
@@ -16,7 +17,7 @@ input#key {
 }
 
 .num-input {
-  width: 20%;
+  /* width: 20%; */
 }
 
 #file-select {
@@ -33,4 +34,32 @@ input#key {
 
 .modal > input:checked ~ .overlay ~ * {
   width: 80%;
+}
+
+.dropzone {
+  border: dashed 2px black;
+  padding: 70px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.key {
+  width: 260px;
+}
+
+.expiration {
+  width: 260px;
+}
+
+.downloads {
+  width: 260px;
+}
+
+.underline {
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+input {
+  margin-top: 10px;
 }

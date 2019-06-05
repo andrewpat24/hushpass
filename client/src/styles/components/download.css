@@ -1,0 +1,37 @@
+.note {
+  position: relative;
+  /* width: 30%; */
+  padding: 1em 1.5em;
+  margin: 2em auto;
+  color: black;
+  background: #fafcfe;
+  /* border: solid #429dd6 2px; */
+  overflow: hidden;
+  -webkit-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.3),
+    -1px 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.3),
+    -1px 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.3), -1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.note:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-width: 0 50px 50px 0;
+  border-style: solid;
+  border-color: #c1dbeb #c1dbeb #429dd6 #429dd6;
+  background: #429dd6;
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3),
+    -1px 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3), -1px 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.3), -1px 1px 1px rgba(0, 0, 0, 0.2);
+  /* Firefox 3.0 damage limitation */
+  display: block;
+  /* width: 0; */
+}
+
+.secret {
+  width: 350px;
+}
