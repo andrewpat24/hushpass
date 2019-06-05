@@ -147,7 +147,7 @@ class UploadForm extends Component {
                 {this.state.fileId ? (
                   <div>
                     <label
-                      for="modal_1"
+                      htmlFor="modal_1"
                       className="button row"
                       id="getFilePathBtn"
                     >
@@ -155,7 +155,7 @@ class UploadForm extends Component {
                     </label>
 
                     <label
-                      for="modal_1"
+                      htmlFor="modal_1"
                       className="button row"
                       onClick={this.onClearCurrentFile}
                     >
@@ -164,7 +164,7 @@ class UploadForm extends Component {
                   </div>
                 ) : (
                   <label
-                    for="modal_1"
+                    htmlFor="modal_1"
                     className="button"
                     id="upload-btn"
                     onClick={this.onClickHandler}
@@ -174,13 +174,13 @@ class UploadForm extends Component {
                 )}
 
                 {this.state.fileId && (
-                  <div class="modal">
+                  <div className="modal">
                     <input id="modal_1" type="checkbox" />
-                    <label for="modal_1" className="overlay" />
+                    <label htmlFor="modal_1" className="overlay" />
                     <article>
                       <header>
                         <h3>Upload Complete</h3>
-                        <label for="modal_1" className="close">
+                        <label htmlFor="modal_1" className="close">
                           &times;
                         </label>
                       </header>
@@ -211,7 +211,7 @@ class UploadForm extends Component {
                         </div>
                       </section>
                       <footer>
-                        <label for="modal_1" className="button dangerous">
+                        <label htmlFor="modal_1" className="button dangerous">
                           Close
                         </label>
                       </footer>
