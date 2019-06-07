@@ -1,0 +1,7 @@
+{
+  "name": "mongo_timed_job",
+  "dependencies": {
+    "mongoose": "^5.5.13",
+    "svg2png": "^4.1.1"
+  }
+}
