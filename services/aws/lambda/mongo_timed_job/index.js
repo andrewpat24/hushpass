@@ -1,11 +1,15 @@
+// require("dotenv").load();
 const mongoose = require("mongoose");
-var MONGO_URI = require("./credentials").MONGO_URI;
 
 exports.handler = async event => {
   // TODO implement
+  console.log("MONGO_URI:", process.env.MONGO_URI);
   const response = {
     statusCode: 200,
-    body: JSON.stringify("Hello from Lambda!")
+    body: JSON.stringify({
+      message: "Hello from Lambda!",
+      uri: process.env.MONGO_URI
+    })
   };
   return response;
 };
