@@ -4,7 +4,8 @@
   padding: 1em 1.5em;
   margin: 2em auto;
   color: black;
-  background: #fafcfe;
+  background: #f7f5f0;
+  /* background: #fafcfe; */
   /* border: solid #429dd6 2px; */
   overflow: hidden;
   -webkit-box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.3),

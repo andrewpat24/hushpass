@@ -54,7 +54,9 @@ class Download extends Component {
   render = () => {
     const successTemplate = (
       <div>
-        <h1 className="center header-description">Your File Is Ready</h1>
+        <h1 className="center header-description header-text">
+          Your File Is Ready
+        </h1>
         <ul className="flex-container">
           <li className="flex-item">
             <div>

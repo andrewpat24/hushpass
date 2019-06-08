@@ -73,3 +73,13 @@ link {
 .brand-white {
   color: #fafcfe;
 }
+
+.bold {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.bottom-text {
+  font-size: 0.8em;
+  font-style: italic;
+}

@@ -4,9 +4,8 @@ const Introduction = (
   <section component="Introduction">
     <div className="border">
       <p>
-        <span className="brand-dark">Hush</span>
-        <span className="brand-white">Hush</span> is a service to securly share
-        files. You upload a file, set a secret key, tell us how long you need it
+        <span class="bold">HushHush</span> is a service to securly share files.
+        You upload a file, set a secret key, tell us how long you need it
         available and how many times it can be downloaded. We then provide a
         link to download the file using the secret key as a password.
       </p>
@@ -23,7 +22,17 @@ const Introduction = (
         we created our own solution. Our service is fast, simple, and easy to
         understand.
       </p>
-      <p>Created By Andew Patterson and Peter Malolepszy</p>
+      <p className="bottom-text">
+        Created By{" "}
+        <a href="https://www.linkedin.com/in/andrew-patterson-65a158110/">
+          Andrew Patterson
+        </a>{" "}
+        and{" "}
+        <a href="https://www.linkedin.com/in/pmalolep/"> Peter Malolepszy </a>
+      </p>
+      <p className="bottom-text">
+        Source on <a href="https://github.com/hushhushpass/hushpass">GitHub</a>
+      </p>
     </div>
   </section>
 );
