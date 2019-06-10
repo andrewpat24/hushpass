@@ -3,24 +3,19 @@ const mongoose = require("mongoose");
 
 console.log("MONGO_URI:", process.env.MONGO_URI);
 
-const test = async () => {
-  const thing = await mongoose.connect(process.env.MONGO_URI, {
+exports.handler = async event => {
+  // TODO implement
+  console.log("MONGO_URI:", process.env.MONGO_URI);
+  const conn = await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true
   });
-  console.log(thing);
+  const gridfs = await Grid(connection.db, mongoose.mongo);
+
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: "Hello from Lambda!"
+    })
+  };
+  return response;
 };
-
-test();
-
-// exports.handler = async event => {
-//   // TODO implement
-//   console.log("MONGO_URI:", process.env.MONGO_URI);
-//   const response = {
-//     statusCode: 200,
-//     body: JSON.stringify({
-//       message: "Hello from Lambda!",
-//       uri: process.env.MONGO_URI
-//     })
-//   };
-//   return response;
-// };
