@@ -37,8 +37,8 @@ input#key {
 }
 
 .dropzone {
-  border: dashed 2px black;
-  padding: 70px;
+  border: dashed 2px #4a3b22;
+  padding: 20px;
   margin-top: 0;
   margin-bottom: 20px;
 }

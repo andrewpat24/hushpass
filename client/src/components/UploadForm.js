@@ -119,12 +119,17 @@ class UploadForm extends Component {
                           <div {...getRootProps()}>
                             <input {...getInputProps()} />
                             {!this.state.selectedFile ? (
-                              <div className="dropzone center">
-                                <p>
-                                  Drag and drop a file here, or{" "}
-                                  <span className="underline">click here</span>{" "}
-                                  to select a file
+                              <div className="dropzone ">
+                                <p className="file-icon ">
+                                  <i className="far fa-file center" />
                                 </p>
+                                <p className="center">
+                                  Drag and drop a file here, or
+                                </p>
+                                <p className="center">
+                                  <span className="underline">click here</span>
+                                </p>
+                                <p className="center">to select a file</p>
                               </div>
                             ) : (
                               <p className="dropzone center">
