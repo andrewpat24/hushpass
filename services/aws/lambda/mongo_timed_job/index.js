@@ -21,6 +21,8 @@ const removeExpiredDocuments = async () => {
   const mongooseConn = await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true
   });
+  console.log(mongoose.mongo);
+  const gridfs = await Grid(mongooseConn.connection.db, mongoose.mongo);
 
   const Document = mongooseConn.model("documents");
   const currentDate = moment().format();
@@ -40,9 +42,12 @@ const removeExpiredDocuments = async () => {
   );
 
   console.log(documents.length);
+
   documents.forEach(doc => {
     expiredDocsData.numberOfDocs += 1;
     expiredDocsData.docMetadata.push(doc);
+    const docId = doc.docId;
+    console.log(docId);
 
     doc.remove((err, res) => {
       if (err) {
@@ -51,9 +56,18 @@ const removeExpiredDocuments = async () => {
         console.log(res);
       }
     });
+
+    gridfs.remove(
+      {
+        filename: docId
+      },
+      (err, result) => {
+        console.log(result);
+      }
+    );
   });
 
-  console.log(expiredDocsData);
+  // console.log(expiredDocsData);
   return expiredDocsData;
 };
 
