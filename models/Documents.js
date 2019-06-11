@@ -14,6 +14,7 @@ const documentsSchema = new Schema({
   },
   maxDownloads: { type: Number, default: 1 },
   downloadCount: { type: Number, default: 0 },
+  maxDownloadsReached: { type: Boolean, default: false },
   dateCreated: { type: Date, default: moment() },
   userID: Number,
   valid: { type: Boolean, default: true }

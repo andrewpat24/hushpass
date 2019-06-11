@@ -21,13 +21,14 @@ const removeExpiredDocuments = async () => {
   const mongooseConn = await mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true
   });
+
   const Document = mongooseConn.model("documents");
   const currentDate = moment().format();
 
   const documents = await Document.find(
     {
       expirationDate: {
-        $lte: currentDate
+        $gte: currentDate
       }
     },
     (err, doc) => {
