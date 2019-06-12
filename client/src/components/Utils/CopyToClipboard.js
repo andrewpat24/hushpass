@@ -30,7 +30,12 @@ class CopyToClipboard extends React.Component {
     };
     return (
       <p>
-        <input value={text} readOnly onClick={() => this.copy()} />
+        <input
+          value={text}
+          readOnly
+          className="copy-text"
+          onClick={() => this.copy()}
+        />
         <button className="btn" onClick={() => this.copy()} {...attr}>
           {label}
         </button>
