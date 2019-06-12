@@ -173,6 +173,16 @@ class UploadForm extends Component {
                       className="row num-input downloads"
                     />
                   </div>
+                  <div className="form-row center">
+                    <label>
+                      <input type="checkbox" name="tosbox" id="tosbox" />
+                      <span className="checkable">
+                        I agree to use this site in a lawful maner
+                        <br /> and assume all responcibility for my use of it.
+                      </span>
+                    </label>
+                  </div>
+
                   <div className="form-row center" id="file-select">
                     <label className="row">
                       <font color="#ff0000">{this.state.error}</font>
@@ -203,6 +213,7 @@ class UploadForm extends Component {
                         className="button"
                         id="upload-btn"
                         onClick={this.onClickHandler}
+                        disabled="document.getElementById('tosbox').checked"
                       >
                         Upload
                       </label>
