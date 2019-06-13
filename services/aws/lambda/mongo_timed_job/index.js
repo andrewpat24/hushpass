@@ -47,14 +47,21 @@ const removeExpiredDocuments = async () => {
 
   const documents = await Document.find(
     {
-      expirationDate: {
-        $gte: currentDate
-      }
+      $or: [
+        {
+          expirationDate: {
+            $lte: currentDate
+          }
+        },
+        { maxDownloadsReached: true }
+      ]
     },
     (err, doc) => {
       if (err) {
         // console.error(err);
-        res.status(404).send("Error retrieving Document from Database.");
+        expiredDocsData.logData +=
+          messageHeaders.err +
+          `Error retrieving Document from Database.: ${err}`;
       }
     }
   );
@@ -155,6 +162,7 @@ exports.handler = async event => {
     log: " | log start: | ",
     err: " | err start: | "
   };
+
   let expiredDocsData = {
     numberOfDocs: 0,
     docMetadata: new Array(),
@@ -180,14 +188,21 @@ exports.handler = async event => {
 
   const documents = await Document.find(
     {
-      expirationDate: {
-        $gte: currentDate
-      }
+      $or: [
+        {
+          expirationDate: {
+            $lte: currentDate
+          }
+        },
+        { maxDownloadsReached: true }
+      ]
     },
     (err, doc) => {
       if (err) {
         // console.error(err);
-        res.status(404).send("Error retrieving Document from Database.");
+        expiredDocsData.logData +=
+          messageHeaders.err +
+          `Error retrieving Document from Database.: ${err}`;
       }
     }
   );
@@ -197,10 +212,9 @@ exports.handler = async event => {
   documents.forEach(async doc => {
     const docId = doc.docId;
 
-    expiredDocsData.numberOfDocs += 1;
-    expiredDocsData.docMetadata.push(doc);
     expiredDocsData.logData += messageHeaders.log + `Current Doc: ${doc.docId}`;
 
+    expiredDocsData.logData += messageHeaders.log + "Begin async remove doc.";
     doc.remove((err, res) => {
       if (err) {
         console.log(err);
@@ -221,9 +235,13 @@ exports.handler = async event => {
       }
     );
 
+    expiredDocsData.logData += messageHeaders.log + "Begin remove fsFile.";
+
     fsFile.remove((err, response) => {
       if (err) {
         expiredDocsData.logData += messageHeaders.err + err;
+      } else {
+        expiredDocsData.logData += messageHeaders.log + "removed fsFile.";
       }
     });
 
@@ -239,6 +257,7 @@ exports.handler = async event => {
       return;
     }
 
+    expiredDocsData.logData += messageHeaders.log + "Begin find chunk.";
     const chunks = await FsChunks.find(
       {
         files_id: fsFile._id
@@ -246,18 +265,27 @@ exports.handler = async event => {
       (err, fsChunk) => {
         if (err) {
           expiredDocsData.logData += messageHeaders.err + err;
+        } else {
+          expiredDocsData.logData +=
+            messageHeaders.log + `Found ${fsChunk.length} chunk(s).`;
         }
       }
     );
 
+    expiredDocsData.logData += messageHeaders.log + "Begin remove chunk loop.";
     chunks.forEach(chunk => {
       chunk.remove((err, response) => {
         if (err) {
           expiredDocsData.logData += messageHeaders.err + err;
+        } else {
+          expiredDocsData.logData += messageHeaders.log + "removed chunk.";
         }
       });
       console.log("IM REMOVING CHUNKS", chunk._id);
     });
+
+    expiredDocsData.numberOfDocs += 1;
+    expiredDocsData.docMetadata.push(doc);
   });
   // </CODE> //////////////////////
 
