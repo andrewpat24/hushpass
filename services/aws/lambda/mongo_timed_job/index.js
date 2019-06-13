@@ -1,9 +1,12 @@
 require("dotenv").config({ path: __dirname + "/.env" });
 const moment = require("moment");
-// Mongoose connection
+// Mongoose & GridFS setup
 const mongoose = require("mongoose");
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
+// Models Import
 require("./models/Documents");
+require("./models/fs.chunks.js");
+require("./models/fs.files.js");
 
 const Grid = require("gridfs-stream");
 eval(
@@ -13,19 +16,34 @@ eval(
 );
 
 const removeExpiredDocuments = async () => {
-  let expiredDocsData = {
-    numberOfDocs: 0,
-    docMetadata: new Array()
+  // <CODE> //////////////////////
+  const messageHeaders = {
+    log: " | log start: | ",
+    err: " | err start: | "
   };
 
-  const mongooseConn = await mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true
-  });
-  console.log(mongoose.mongo);
-  const gridfs = await Grid(mongooseConn.connection.db, mongoose.mongo);
+  let expiredDocsData = {
+    numberOfDocs: 0,
+    docMetadata: new Array(),
+    logData: "logs: "
+  };
 
+  expiredDocsData.logData += messageHeaders.log + "start";
+  const mongooseConn = await mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    connectTimeoutMS: 20000, // Give up initial connection after 20 seconds
+    socketTimeoutMS: 45000 // Close sockets after 45 seconds of inactivity
+  });
+
+  // Models Init
   const Document = mongooseConn.model("documents");
+  const FsChunks = mongooseConn.model("fs.chunks");
+  const FsFiles = mongooseConn.model("fs.files");
+
+  // console.log(FsChunks);
   const currentDate = moment().format();
+  messageHeaders.log +
+    `Mongoose connection status: ${mongoose.connection.readyState}`;
 
   const documents = await Document.find(
     {
@@ -41,45 +59,215 @@ const removeExpiredDocuments = async () => {
     }
   );
 
-  console.log(documents.length);
-
-  documents.forEach(doc => {
-    expiredDocsData.numberOfDocs += 1;
-    expiredDocsData.docMetadata.push(doc);
+  expiredDocsData.logData +=
+    messageHeaders.log + `Docs found: ${documents.length}`;
+  documents.forEach(async doc => {
     const docId = doc.docId;
-    console.log(docId);
 
+    expiredDocsData.logData += messageHeaders.log + `Current Doc: ${doc.docId}`;
+
+    expiredDocsData.logData += messageHeaders.log + "Begin async remove doc.";
     doc.remove((err, res) => {
       if (err) {
         console.log(err);
+        expiredDocsData.logData += messageHeaders.err + err;
       } else {
         console.log(res);
       }
     });
 
-    gridfs.remove(
+    const fsFile = await FsFiles.findOne(
       {
         filename: docId
       },
-      (err, result) => {
-        console.log(result);
+      (err, fsDoc) => {
+        if (err) {
+          expiredDocsData.logData += messageHeaders.err + err;
+        }
       }
     );
-  });
 
-  // console.log(expiredDocsData);
+    expiredDocsData.logData += messageHeaders.log + "Begin remove fsFile.";
+
+    fsFile.remove((err, response) => {
+      if (err) {
+        expiredDocsData.logData += messageHeaders.err + err;
+      } else {
+        expiredDocsData.logData += messageHeaders.log + "removed fsFile.";
+      }
+    });
+
+    if (fsFile === null) {
+      expiredDocsData.logData +=
+        messageHeaders.err +
+        `${docId} - Document id cannot be found in fsFile.`;
+      return;
+    }
+
+    console.log("fsFile", fsFile);
+    if (fsFile._id === undefined) {
+      return;
+    }
+
+    expiredDocsData.logData += messageHeaders.log + "Begin find chunk.";
+    const chunks = await FsChunks.find(
+      {
+        files_id: fsFile._id
+      },
+      (err, fsChunk) => {
+        if (err) {
+          expiredDocsData.logData += messageHeaders.err + err;
+        } else {
+          expiredDocsData.logData +=
+            messageHeaders.log + `Found ${fsChunk.length} chunk(s).`;
+        }
+      }
+    );
+
+    expiredDocsData.logData += messageHeaders.log + "Begin remove chunk loop.";
+    chunks.forEach(chunk => {
+      chunk.remove((err, response) => {
+        if (err) {
+          expiredDocsData.logData += messageHeaders.err + err;
+        } else {
+          expiredDocsData.logData += messageHeaders.log + "removed chunk.";
+        }
+      });
+      console.log("IM REMOVING CHUNKS", chunk._id);
+    });
+
+    expiredDocsData.numberOfDocs += 1;
+    expiredDocsData.docMetadata.push(doc);
+  });
+  // </CODE> //////////////////////
+
+  console.log(expiredDocsData);
   return expiredDocsData;
 };
 
 removeExpiredDocuments();
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 exports.handler = async event => {
-  const expiredDocsData = removeExpiredDocuments();
+  // <CODE> //////////////////////
+  const messageHeaders = {
+    log: " | log start: | ",
+    err: " | err start: | "
+  };
+  let expiredDocsData = {
+    numberOfDocs: 0,
+    docMetadata: new Array(),
+    logData: "logs: "
+  };
+
+  expiredDocsData.logData += messageHeaders.log + "start";
+  const mongooseConn = await mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    connectTimeoutMS: 20000, // Give up initial connection after 20 seconds
+    socketTimeoutMS: 45000 // Close sockets after 45 seconds of inactivity
+  });
+
+  // Models Init
+  const Document = mongooseConn.model("documents");
+  const FsChunks = mongooseConn.model("fs.chunks");
+  const FsFiles = mongooseConn.model("fs.files");
+
+  // console.log(FsChunks);
+  const currentDate = moment().format();
+  messageHeaders.log +
+    `Mongoose connection status: ${mongoose.connection.readyState}`;
+
+  const documents = await Document.find(
+    {
+      expirationDate: {
+        $gte: currentDate
+      }
+    },
+    (err, doc) => {
+      if (err) {
+        // console.error(err);
+        res.status(404).send("Error retrieving Document from Database.");
+      }
+    }
+  );
+
+  expiredDocsData.logData +=
+    messageHeaders.log + `Docs found: ${documents.length}`;
+  documents.forEach(async doc => {
+    const docId = doc.docId;
+
+    expiredDocsData.numberOfDocs += 1;
+    expiredDocsData.docMetadata.push(doc);
+    expiredDocsData.logData += messageHeaders.log + `Current Doc: ${doc.docId}`;
+
+    doc.remove((err, res) => {
+      if (err) {
+        console.log(err);
+        expiredDocsData.logData += messageHeaders.err + err;
+      } else {
+        console.log(res);
+      }
+    });
+
+    const fsFile = await FsFiles.findOne(
+      {
+        filename: docId
+      },
+      (err, fsDoc) => {
+        if (err) {
+          expiredDocsData.logData += messageHeaders.err + err;
+        }
+      }
+    );
+
+    fsFile.remove((err, response) => {
+      if (err) {
+        expiredDocsData.logData += messageHeaders.err + err;
+      }
+    });
+
+    if (fsFile === null) {
+      expiredDocsData.logData +=
+        messageHeaders.err +
+        `${docId} - Document id cannot be found in fsFile.`;
+      return;
+    }
+
+    console.log("fsFile", fsFile);
+    if (fsFile._id === undefined) {
+      return;
+    }
+
+    const chunks = await FsChunks.find(
+      {
+        files_id: fsFile._id
+      },
+      (err, fsChunk) => {
+        if (err) {
+          expiredDocsData.logData += messageHeaders.err + err;
+        }
+      }
+    );
+
+    chunks.forEach(chunk => {
+      chunk.remove((err, response) => {
+        if (err) {
+          expiredDocsData.logData += messageHeaders.err + err;
+        }
+      });
+      console.log("IM REMOVING CHUNKS", chunk._id);
+    });
+  });
+  // </CODE> //////////////////////
+
   const response = {
     statusCode: 200,
     body: JSON.stringify({
       message: `${expiredDocsData.numberOfDocs} document(s) have been removed.`,
-      docData: expiredDocsData.docMetadata
+      docData: expiredDocsData.docMetadata,
+      logData: expiredDocsData.logData,
+      expiredDocsData
     })
   };
   return response;
