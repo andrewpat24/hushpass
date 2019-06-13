@@ -104,10 +104,26 @@ router.post("/file/:documentCode", async function(req, res) {
       if (err) return console.error(err);
     });
 
-    if (
-      document.maxDownloads <= document.downloadCount ||
-      document.maxDownloadsReached
-    ) {
+    const docStatus = (document => {
+      if (
+        document.maxDownloads <= document.downloadCount ||
+        document.maxDownloadsReached
+      ) {
+        return "DocLimit";
+      } else if (moment(document.expirationDate) <= moment()) {
+        return "Expired";
+      }
+
+      return "";
+    })();
+
+    if (docStatus === "Expired") {
+      return res.status(421).send({
+        error: "Document has reached its expiration date."
+      });
+    }
+
+    if (docStatus === "DocLimit") {
       if (!document.maxDownloadsReached) {
         Document.findOneAndUpdate(
           {
@@ -124,8 +140,9 @@ router.post("/file/:documentCode", async function(req, res) {
           }
         );
       }
-      return res.status(401).send({
-        error: "Maximum number of downloads has been reached for this document."
+      return res.status(411).send({
+        error:
+          "The maximum number of downloads has been reached for this document."
       });
     } else {
       Document.findOneAndUpdate(
