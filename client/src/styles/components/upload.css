@@ -1,0 +1,108 @@
+.uploadForm-container {
+  display: flex;
+}
+
+.uploadForm {
+  flex-direction: row;
+  width: 100%;
+  padding: 10px;
+}
+
+input#key {
+  width: 40%;
+}
+
+.form-row {
+  padding-bottom: 2%;
+}
+
+.num-input {
+  width: 20%;
+}
+
+#file-select {
+  width: 20%;
+}
+
+#upload-btn {
+  width: 20%;
+}
+
+#getFilePathBtn div {
+  width: 100%;
+}
+
+.modal > input:checked ~ .overlay ~ * {
+  width: 600px;
+  overflow: hidden;
+}
+
+.dropzone {
+  border: dashed 2px #4a3b22;
+  padding: 20px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.key {
+  width: 260px;
+}
+
+.expiration {
+  width: 260px;
+}
+
+.downloads {
+  width: 260px;
+}
+
+.underline {
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+input {
+  margin-top: 10px;
+  background-color: #fafcfe;
+}
+
+.tosBox {
+  width: 300px;
+  font-size: 0.7em;
+  text-align: center;
+  margin-top: 15px;
+}
+
+.error {
+  font-size: 0.8em;
+  margin-top: 15px;
+  color: red;
+}
+
+.button {
+  margin-bottom: 20px;
+}
+
+.copy-box {
+  text-align: center;
+  margin-bottom: 10px;
+  margin: 25px;
+}
+
+.copy-text {
+  text-align: center;
+}
+
+.modal-brief {
+  margin: 25px;
+  margin-bottom: 5px;
+}
+
+.modal-article {
+  background-color: #fafcfe !important;
+  color: #4a3b22 !important;
+}
+
+h1 {
+  padding: 0;
+}
