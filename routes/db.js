@@ -104,13 +104,44 @@ router.post("/file/:documentCode", async function(req, res) {
       if (err) return console.error(err);
     });
 
-    if (document.maxDownloads <= document.downloadCount) {
-      Document.update(document, {
-        maxDownloadsReached: true
+    if (
+      document.maxDownloads <= document.downloadCount ||
+      document.maxDownloadsReached
+    ) {
+      if (!document.maxDownloadsReached) {
+        Document.findOneAndUpdate(
+          {
+            docId
+          },
+          {
+            $set: {
+              maxDownloadsReached: true
+            }
+          },
+          { new: true },
+          result => {
+            console.log(result);
+          }
+        );
+      }
+      return res.status(401).send({
+        error: "Maximum number of downloads has been reached for this document."
       });
-      // document.update({
-      //   maxDownloadsReached: true
-      // });
+    } else {
+      Document.findOneAndUpdate(
+        {
+          docId
+        },
+        {
+          $set: {
+            downloadCount: document.downloadCount + 1
+          }
+        },
+        { new: true },
+        result => {
+          console.log(result);
+        }
+      );
     }
 
     const hash = crypto
@@ -148,13 +179,6 @@ router.post("/file/:documentCode", async function(req, res) {
         console.error("error");
         res.end();
       });
-      Document.update(document, {
-        downloadCount: document.downloadCount + 1
-      });
-      // document.update({
-      //   downloadCount: document.downloadCount + 1
-      // });
-      // document.save();
     });
   });
 });

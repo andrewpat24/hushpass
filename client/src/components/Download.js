@@ -38,6 +38,7 @@ class Download extends Component {
       })
       .catch(err => {
         console.error("Error:", err);
+
         this.setState({ pw: "Bad Password" });
       });
   };
