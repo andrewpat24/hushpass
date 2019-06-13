@@ -104,6 +104,15 @@ router.post("/file/:documentCode", async function(req, res) {
       if (err) return console.error(err);
     });
 
+    if (document.maxDownloads <= document.downloadCount) {
+      Document.update(document, {
+        maxDownloadsReached: true
+      });
+      // document.update({
+      //   maxDownloadsReached: true
+      // });
+    }
+
     const hash = crypto
       .createHash("sha256")
       .update(fields.password)
@@ -139,6 +148,13 @@ router.post("/file/:documentCode", async function(req, res) {
         console.error("error");
         res.end();
       });
+      Document.update(document, {
+        downloadCount: document.downloadCount + 1
+      });
+      // document.update({
+      //   downloadCount: document.downloadCount + 1
+      // });
+      // document.save();
     });
   });
 });
