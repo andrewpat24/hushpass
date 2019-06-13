@@ -4,8 +4,8 @@ const Introduction = (
   <section component="Introduction">
     <div className="border">
       <p>
-        <span class="bold">HushHush</span> is a service to securly share files.
-        You upload a file, set a secret key, tell us how long you need it
+        <span className="bold">HushHush</span> is a service to securly share
+        files. You upload a file, set a secret key, tell us how long you need it
         available and how many times it can be downloaded. We then provide a
         link to download the file using the secret key as a password.
       </p>
