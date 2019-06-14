@@ -74,14 +74,6 @@ const removeExpiredDocuments = async () => {
     expiredDocsData.logData += messageHeaders.log + `Current Doc: ${doc.docId}`;
 
     expiredDocsData.logData += messageHeaders.log + "Begin async remove doc.";
-    doc.remove((err, res) => {
-      if (err) {
-        console.log(err);
-        expiredDocsData.logData += messageHeaders.err + err;
-      } else {
-        console.log(res);
-      }
-    });
 
     const fsFile = await FsFiles.findOne(
       {
@@ -215,14 +207,6 @@ exports.handler = async event => {
     expiredDocsData.logData += messageHeaders.log + `Current Doc: ${doc.docId}`;
 
     expiredDocsData.logData += messageHeaders.log + "Begin async remove doc.";
-    doc.remove((err, res) => {
-      if (err) {
-        console.log(err);
-        expiredDocsData.logData += messageHeaders.err + err;
-      } else {
-        console.log(res);
-      }
-    });
 
     const fsFile = await FsFiles.findOne(
       {
