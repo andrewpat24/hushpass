@@ -81,7 +81,6 @@ router.get("/:documentCode", async function(req, res) {
       res.status(404).send("Error getting Document from Database");
     }
   });
-
   res.status(200).send({
     fileName: document.fileName,
     fileType: document.fileType,
@@ -103,7 +102,6 @@ router.post("/file/:documentCode", async function(req, res) {
     ) {
       if (err) return console.error(err);
     });
-
     const docStatus = (document => {
       if (
         document.maxDownloads <= document.downloadCount ||
@@ -115,11 +113,11 @@ router.post("/file/:documentCode", async function(req, res) {
       }
 
       return "";
-    })();
+    })(document);
 
     if (docStatus === "Expired") {
       return res.status(421).send({
-        error: "Document has reached its expiration date."
+        error: "Document has been expired."
       });
     }
 
