@@ -118,7 +118,7 @@ class UploadForm extends Component {
             <li className="flex-item">
               <div className="uploadForm-container">
                 <div className="uploadForm ">
-                  <div className="form-row ">
+                  <div className="form-row" id="upload-form-box">
                     <Dropzone
                       onDrop={acceptedFiles => this.onDropZone(acceptedFiles)}
                     >
