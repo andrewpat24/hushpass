@@ -1,15 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-const Landing = () => {
+import React, { Component } from "react";
+import UploadForm from "./UploadForm";
+class Landing extends Component {
+  render() {
     return (
-        <div style={{
-            textAlign: 'center'
-        }}>
-            <h1>HushPass</h1>
-            <span>Share Files Securely.</span>
-        </div>
-    )
+      <section component="Landing">
+        <UploadForm />
+      </section>
+    );
+  }
 }
-
-export default Landing; 
+export default Landing;

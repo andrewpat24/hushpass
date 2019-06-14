@@ -1,55 +1,35 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+// Styles
+import "../styles/components/header.css";
 
 class Header extends Component {
-
-    renderContent() {
-        let isLoggedIn = !!this.props.auth
-    
-        switch (isLoggedIn) {
-            case false: 
-                return (
-                    <Fragment>
-                        <li> <a href="/api/auth/google">Login with Google</a> </li>
-                    </Fragment>
-                );
-            default: 
-                return (
-                    <Fragment>
-                        <li > <a href="/api/auth/logout">Logout</a> </li>
-                    </Fragment>
-                );
-        }
-
-    }
-
-    render () {
- 
-        let AuthState = this.props.auth;
-        return (
-            <nav>
-                <div className="nav-wrapper" >
-                        
-                    <Link to={AuthState ? '/' : '/'} className="left brand-logo">
-                        HushPass
-                    </Link>
-                    
-                    <ul className="right">
-                        
-                        { this.renderContent() }
-                        
-                    </ul>
-                </div>
-            </nav>
-        )
-    }
+  render() {
+    let AuthState = this.props.auth;
+    return (
+      <section className="Header">
+        <div className="header-container">
+          <div className="header row">
+            <div className="nav-group nav-left row">
+              <div className="nav-item logo">
+                <Link style={{ textDecoration: "none", color: "white" }} to="/">
+                  <span className="brand-dark">Hush</span>
+                  <span className="brand-white">Hush</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return { 
-        auth: state.auth
-    };
-} 
+  return {
+    auth: state.auth
+  };
+}
 
 export default connect(mapStateToProps)(Header);

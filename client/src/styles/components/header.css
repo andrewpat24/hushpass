@@ -1,0 +1,31 @@
+.header-container {
+  padding: 1%;
+}
+
+.header {
+  justify-content: space-between;
+  padding-bottom: 3%;
+  text-align: center;
+}
+
+.header ul {
+  list-style-type: none;
+}
+
+.header .logo {
+  font-size: 2em;
+}
+
+.header-text {
+  font-size: 2em;
+  font-weight: 200;
+}
+
+.header-description {
+  font-size: 1.2em;
+  font-style: oblique;
+}
+
+.nav-item {
+  font-size: 1.5em;
+}

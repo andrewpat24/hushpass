@@ -1,0 +1,13 @@
+{
+  "name": "mongo_timed_job",
+  "scripts": {
+    "build": "zip -r ./mongo_timed_job.zip *"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "gridfs-stream": "^1.1.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.5.13",
+    "svg2png": "^4.1.1"
+  }
+}
