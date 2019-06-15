@@ -32,7 +32,7 @@ router.post("/upload", function(req, res) {
       fileType: files["file"].type,
       hashedKey: crypto
         .createHash("sha256")
-        .update(fields.key)
+        .update(process.env.SALT + fields.key)
         .digest("hex"),
       userID: req.userID,
       maxDownloads: fields.downloads ? fields.downloads : 1,
@@ -41,7 +41,14 @@ router.post("/upload", function(req, res) {
         : moment().add(1, "d")
     }).save();
 
-    const cipher = crypto.createCipher("aes-256-cbc", fields.key);
+    let realKey = crypto.scryptSync(fields.key, process.env.SALT, 32);
+    const cipher = crypto.createCipheriv(
+      "aes-256-cbc",
+      realKey,
+      Buffer.from(process.env.SALT, "ascii")
+        .toString("hex")
+        .slice(0, 16)
+    );
     const input = fs.createReadStream(files["file"].path);
 
     const encryptedFilePath = files["file"].path + ".enc";
@@ -161,7 +168,7 @@ router.post("/file/:documentCode", async function(req, res) {
 
     const hash = crypto
       .createHash("sha256")
-      .update(fields.password)
+      .update(process.env.SALT + fields.password)
       .digest("hex");
 
     if (hash != document.hashedKey) return res.status(401).send("Bad password");
@@ -182,7 +189,14 @@ router.post("/file/:documentCode", async function(req, res) {
         'attachment; filename="' + document.fileName + '"'
       );
 
-      const cipher = crypto.createDecipher("aes-256-cbc", fields.password);
+      let realKey = crypto.scryptSync(fields.password, process.env.SALT, 32);
+      const cipher = crypto.createDecipheriv(
+        "aes-256-cbc",
+        realKey,
+        Buffer.from(process.env.SALT, "ascii")
+          .toString("hex")
+          .slice(0, 16)
+      );
       const readstream = gridfs.createReadStream({ filename: docId });
       readstream.pipe(cipher).pipe(res);
 
