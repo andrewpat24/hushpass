@@ -131,9 +131,7 @@ class UploadForm extends Component {
                                 <p className="file-icon ">
                                   <i className="far fa-file center" />
                                 </p>
-                                <p className="center">
-                                  Drag and drop a file here, or
-                                </p>
+                                <p className="center">Drag and drop a file</p>
                                 <p className="center">
                                   <span className="underline">click here</span>
                                 </p>
@@ -219,7 +217,7 @@ class UploadForm extends Component {
                     ) : (
                       <label
                         for="modal_1"
-                        className="button"
+                        className="button upload-btn"
                         id="upload-btn"
                         onClick={this.onClickHandler}
                       >

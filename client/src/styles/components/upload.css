@@ -9,15 +9,11 @@
 }
 
 input#key {
-  width: 40%;
+  width: 260px;
 }
 
 .form-row {
   padding-bottom: 2%;
-}
-
-.num-input {
-  width: 20%;
 }
 
 #file-select {
@@ -25,7 +21,7 @@ input#key {
 }
 
 #upload-btn {
-  width: 20%;
+  width: 50%;
 }
 
 #getFilePathBtn div {
@@ -44,18 +40,6 @@ input#key {
   margin-bottom: 20px;
 }
 
-.key {
-  width: 260px;
-}
-
-.expiration {
-  width: 260px;
-}
-
-.downloads {
-  width: 260px;
-}
-
 .underline {
   text-decoration: underline;
   white-space: nowrap;
@@ -64,8 +48,13 @@ input#key {
 input {
   margin-top: 10px;
   background-color: #fafcfe;
+  width: 260px;
 }
-
+@media only screen and (max-width: 900px) {
+  input {
+    width: 90%;
+  }
+}
 .tosBox {
   width: 300px;
   font-size: 0.7em;
