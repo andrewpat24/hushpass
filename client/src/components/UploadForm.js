@@ -199,7 +199,7 @@ class UploadForm extends Component {
                     {this.state.fileId ? (
                       <div>
                         <label
-                          for="modal_1"
+                          htmlFor="modal_1"
                           className="button row"
                           id="getFilePathBtn"
                         >
@@ -216,8 +216,8 @@ class UploadForm extends Component {
                       </div>
                     ) : (
                       <label
-                        for="modal_1"
-                        className="button upload-btn"
+                        htmlFor="modal_1"
+                        className="button"
                         id="upload-btn"
                         onClick={this.onClickHandler}
                       >

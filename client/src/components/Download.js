@@ -12,7 +12,7 @@ class Download extends Component {
     super(props);
     this.state = {
       document: {},
-      pw: ""
+      error: ""
     };
   }
 
@@ -27,7 +27,7 @@ class Download extends Component {
     axios
       .post("/api/db/file/" + this.props.match.params.fileId, data, config)
       .then(res => {
-        this.setState({ pw: "" });
+        this.setState({ error: "" });
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -37,8 +37,18 @@ class Download extends Component {
         link.click();
       })
       .catch(err => {
-        console.error("Error:", err);
-        this.setState({ pw: "Bad Password" });
+        console.error("Error:", err.response.status);
+        const errStatus = err.response.status;
+        if (errStatus === 411) {
+          this.setState({
+            error:
+              "The maximum number of downloads has been reached for this document."
+          });
+        } else if (errStatus === 421) {
+          this.setState({
+            error: "The document has exceeded its expiration date."
+          });
+        }
       });
   };
 
@@ -77,7 +87,7 @@ class Download extends Component {
               </p>
 
               <p id="pw-error" className="alert alert-danger center">
-                <font color="red">{this.state.pw}</font>
+                <font color="red">{this.state.error}</font>
               </p>
               <p className="center">
                 <button

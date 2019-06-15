@@ -81,7 +81,6 @@ router.get("/:documentCode", async function(req, res) {
       res.status(404).send("Error getting Document from Database");
     }
   });
-
   res.status(200).send({
     fileName: document.fileName,
     fileType: document.fileType,
@@ -103,6 +102,62 @@ router.post("/file/:documentCode", async function(req, res) {
     ) {
       if (err) return console.error(err);
     });
+    const docStatus = (document => {
+      if (
+        document.maxDownloads <= document.downloadCount ||
+        document.maxDownloadsReached
+      ) {
+        return "DocLimit";
+      } else if (moment(document.expirationDate) <= moment()) {
+        return "Expired";
+      }
+
+      return "";
+    })(document);
+
+    if (docStatus === "Expired") {
+      return res.status(421).send({
+        error: "Document has been expired."
+      });
+    }
+
+    if (docStatus === "DocLimit") {
+      if (!document.maxDownloadsReached) {
+        Document.findOneAndUpdate(
+          {
+            docId
+          },
+          {
+            $set: {
+              maxDownloadsReached: true
+            }
+          },
+          { new: true },
+          result => {
+            console.log(result);
+          }
+        );
+      }
+      return res.status(411).send({
+        error:
+          "The maximum number of downloads has been reached for this document."
+      });
+    } else {
+      Document.findOneAndUpdate(
+        {
+          docId
+        },
+        {
+          $set: {
+            downloadCount: document.downloadCount + 1
+          }
+        },
+        { new: true },
+        result => {
+          console.log(result);
+        }
+      );
+    }
 
     const hash = crypto
       .createHash("sha256")
