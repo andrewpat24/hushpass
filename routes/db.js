@@ -58,7 +58,7 @@ router.post("/upload", function(req, res) {
 
     //FILE HAS BEEN SUCCESSFULLY ENCRYPTED
     output.on("finish", function() {
-      console.log("Encrypted file written to disk!");
+      // console.log("Encrypted file written to disk!");
       const gridfs = Grid(connection.db, mongoose.mongo);
 
       const writestream = gridfs.createWriteStream({
@@ -84,7 +84,7 @@ router.get("/:documentCode", async function(req, res) {
   const docId = req.params.documentCode;
   const document = await Document.findOne({ docId: docId }, function(err, doc) {
     if (err) {
-      // console.error(err);
+      console.error(err);
       res.status(404).send("Error getting Document from Database");
     }
   });
@@ -96,8 +96,6 @@ router.get("/:documentCode", async function(req, res) {
 });
 
 router.post("/file/:documentCode", async function(req, res) {
-  // console.log('*** arived in get db/file ***');
-  // console.log('body:',req.body);
   const docId = req.params.documentCode;
 
   const form = new formidable.IncomingForm();
@@ -141,7 +139,7 @@ router.post("/file/:documentCode", async function(req, res) {
           },
           { new: true },
           result => {
-            console.log(result);
+            // console.log(result);
           }
         );
       }
@@ -161,7 +159,7 @@ router.post("/file/:documentCode", async function(req, res) {
         },
         { new: true },
         result => {
-          console.log(result);
+          // console.log(result);
         }
       );
     }
