@@ -25,6 +25,10 @@ const moment = require("moment");
 router.post("/upload", function(req, res) {
   const form = new formidable.IncomingForm();
   form.parse(req, async function(err, fields, files) {
+    if (files.file.size > 52428800) {
+      res.status(401).send("File is too large to upload. Limit is set to 50MB");
+    }
+
     const docId = uuidv4();
     const newDoc = await new Document({
       docId: docId,
