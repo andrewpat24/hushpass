@@ -25,6 +25,12 @@ const moment = require("moment");
 router.post("/upload", function(req, res) {
   const form = new formidable.IncomingForm();
   form.parse(req, async function(err, fields, files) {
+    if (files.file.size > 24500000) {
+      console.log("File is too large");
+      // Sending a proper 401 or 500 status crashes the backend.
+      res.status(200).send("File is too large");
+    }
+
     const docId = uuidv4();
     const newDoc = await new Document({
       docId: docId,
@@ -72,7 +78,7 @@ router.post("/upload", function(req, res) {
       });
       writestream.on("error", function(err) {
         console.error("error");
-        res.status(500).end();
+        res.status(200).send("Could not add file to db");
       });
 
       return res.status(200).send(docId);
