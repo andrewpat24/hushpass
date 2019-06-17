@@ -36,7 +36,7 @@ router.post("/upload", function(req, res) {
       fileType: files["file"].type,
       hashedKey: crypto
         .createHash("sha256")
-        .update(fields.key)
+        .update(process.env.SALT + fields.key)
         .digest("hex"),
       userID: req.userID,
       maxDownloads: fields.downloads ? fields.downloads : 1,
@@ -45,7 +45,14 @@ router.post("/upload", function(req, res) {
         : moment().add(1, "d")
     }).save();
 
-    const cipher = crypto.createCipher("aes-256-cbc", fields.key);
+    let realKey = crypto.scryptSync(fields.key, process.env.SALT, 32);
+    const cipher = crypto.createCipheriv(
+      "aes-256-cbc",
+      realKey,
+      Buffer.from(process.env.SALT, "ascii")
+        .toString("hex")
+        .slice(0, 16)
+    );
     const input = fs.createReadStream(files["file"].path);
 
     const encryptedFilePath = files["file"].path + ".enc";
@@ -55,7 +62,7 @@ router.post("/upload", function(req, res) {
 
     //FILE HAS BEEN SUCCESSFULLY ENCRYPTED
     output.on("finish", function() {
-      console.log("Encrypted file written to disk!");
+      // console.log("Encrypted file written to disk!");
       const gridfs = Grid(connection.db, mongoose.mongo);
 
       const writestream = gridfs.createWriteStream({
@@ -81,7 +88,7 @@ router.get("/:documentCode", async function(req, res) {
   const docId = req.params.documentCode;
   const document = await Document.findOne({ docId: docId }, function(err, doc) {
     if (err) {
-      // console.error(err);
+      console.error(err);
       res.status(404).send("Error getting Document from Database");
     }
   });
@@ -93,8 +100,6 @@ router.get("/:documentCode", async function(req, res) {
 });
 
 router.post("/file/:documentCode", async function(req, res) {
-  // console.log('*** arived in get db/file ***');
-  // console.log('body:',req.body);
   const docId = req.params.documentCode;
 
   const form = new formidable.IncomingForm();
@@ -138,7 +143,7 @@ router.post("/file/:documentCode", async function(req, res) {
           },
           { new: true },
           result => {
-            console.log(result);
+            // console.log(result);
           }
         );
       }
@@ -158,14 +163,14 @@ router.post("/file/:documentCode", async function(req, res) {
         },
         { new: true },
         result => {
-          console.log(result);
+          // console.log(result);
         }
       );
     }
 
     const hash = crypto
       .createHash("sha256")
-      .update(fields.password)
+      .update(process.env.SALT + fields.password)
       .digest("hex");
 
     if (hash != document.hashedKey) return res.status(401).send("Bad password");
@@ -186,7 +191,14 @@ router.post("/file/:documentCode", async function(req, res) {
         'attachment; filename="' + document.fileName + '"'
       );
 
-      const cipher = crypto.createDecipher("aes-256-cbc", fields.password);
+      let realKey = crypto.scryptSync(fields.password, process.env.SALT, 32);
+      const cipher = crypto.createDecipheriv(
+        "aes-256-cbc",
+        realKey,
+        Buffer.from(process.env.SALT, "ascii")
+          .toString("hex")
+          .slice(0, 16)
+      );
       const readstream = gridfs.createReadStream({ filename: docId });
       readstream.pipe(cipher).pipe(res);
 

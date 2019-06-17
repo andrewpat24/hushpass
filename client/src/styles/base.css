@@ -10,7 +10,7 @@ link {
 }
 
 .app-container {
-  padding: 0% 10% 0% 10%;
+  padding: 0% 2% 0% 2%;
 }
 
 /* GLOBAL FLEX ATTRIBUTES */
@@ -31,12 +31,10 @@ link {
 }
 
 .flex-item {
-  /* background: tomato; */
   background-color: #c1dbeb;
   padding: 25px;
   margin: 25px;
-  width: 700px;
-  /* height: 150px; */
+  width: 40%;
 }
 
 .left {
@@ -63,6 +61,7 @@ link {
   padding: 20px;
   padding-top: 10px;
   margin: 20px;
+  text-align: justify;
 }
 
 /* COLORS */
@@ -89,4 +88,22 @@ link {
   font-size: 3em;
   margin-top: 30px;
   margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 900px) {
+  .flex-item {
+    padding: 10px;
+    margin: 20px;
+    width: 90%;
+  }
+  .header-container {
+    display: none;
+  }
+  body {
+    font-size: 4vw;
+  }
+  .border {
+    padding: 10px;
+    margin: 10px;
+  }
 }
