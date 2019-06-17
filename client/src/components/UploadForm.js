@@ -7,7 +7,6 @@ import "../styles/base.css";
 import "../styles/components/upload.css";
 
 import Dropzone from "react-dropzone";
-import Confirmation from "./Confirmation";
 import Introduction from "./Introduction";
 
 class UploadForm extends Component {
@@ -20,14 +19,6 @@ class UploadForm extends Component {
       error: null
     };
   }
-
-  onChangeHandler = async event => {
-    const file = event.target.files[0];
-
-    await this.setState({
-      selectedFile: file
-    });
-  };
 
   onClearCurrentFile = () => {
     this.setState({
@@ -46,7 +37,18 @@ class UploadForm extends Component {
     await this.setState({
       selectedFile: acceptedFiles[0]
     });
-    await console.log("file set:", this.state);
+    if (acceptedFiles[0].size > 25 * 1048576) {
+      this.setState({
+        error:
+          "File must be 25MB or below. Your file is " +
+          (acceptedFiles[0].size / 1048576).toFixed(2) +
+          "MB"
+      });
+    } else {
+      this.setState({
+        error: null
+      });
+    }
   }
 
   onClickHandler = () => {
@@ -61,6 +63,18 @@ class UploadForm extends Component {
         error: "Please agree to the conditions of use before continuing"
       });
       return "Please agree to the conditions of use before continuing";
+    } else if (this.state.selectedFile.size > 25 * 1048576) {
+      this.setState({
+        error:
+          "File must be 25mb or below. Your file is " +
+          (this.state.selectedFile.size / 1048576).toFixed(2) +
+          "b"
+      });
+      return (
+        "File must be 50mb or below. Your file is " +
+        this.state.selectedFile.size / 1048576 +
+        "b"
+      );
     } else {
       this.setState({ error: null });
     }
@@ -83,14 +97,12 @@ class UploadForm extends Component {
     );
 
     const config = { headers: { "Content-Type": "multipart/form-data" } };
-    console.log(this.state);
 
-    // console.log('axios',data);
     axios
       .post("/api/db/upload/", data, config)
 
       .then(res => {
-        console.log("res: ", res);
+        // console.log("res: ", res);
         this.setState({
           showDownloadForm: false,
           fileId: res.data
@@ -131,9 +143,7 @@ class UploadForm extends Component {
                                 <p className="file-icon ">
                                   <i className="far fa-file center" />
                                 </p>
-                                <p className="center">
-                                  Drag and drop a file here, or
-                                </p>
+                                <p className="center">Drag and drop a file</p>
                                 <p className="center">
                                   <span className="underline">click here</span>
                                 </p>
@@ -201,7 +211,7 @@ class UploadForm extends Component {
                     {this.state.fileId ? (
                       <div>
                         <label
-                          for="modal_1"
+                          htmlFor="modal_1"
                           className="button row"
                           id="getFilePathBtn"
                         >
@@ -218,7 +228,7 @@ class UploadForm extends Component {
                       </div>
                     ) : (
                       <label
-                        for="modal_1"
+                        htmlFor="modal_1"
                         className="button"
                         id="upload-btn"
                         onClick={this.onClickHandler}
