@@ -1,19 +1,12 @@
 require("dotenv").config({ path: __dirname + "/.env" });
 const moment = require("moment");
-// Mongoose & GridFS setup
+// Mongoose setup
 const mongoose = require("mongoose");
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 // Models Import
 require("./models/Documents");
 require("./models/fs.chunks.js");
 require("./models/fs.files.js");
-
-const Grid = require("gridfs-stream");
-eval(
-  `Grid.prototype.findOne = ${Grid.prototype.findOne
-    .toString()
-    .replace("nextObject", "next")}`
-);
 
 const removeExpiredDocuments = async () => {
   // <CODE> //////////////////////
@@ -86,6 +79,11 @@ const removeExpiredDocuments = async () => {
       }
     );
 
+    if (fsFile === null) {
+      console.log("File data has already been deleted.");
+      return "File data has already been deleted.";
+    }
+
     expiredDocsData.logData += messageHeaders.log + "Begin remove fsFile.";
 
     fsFile.remove((err, response) => {
@@ -140,11 +138,11 @@ const removeExpiredDocuments = async () => {
   });
   // </CODE> //////////////////////
 
-  console.log(expiredDocsData);
+  // console.log(expiredDocsData);
   return expiredDocsData;
 };
 
-removeExpiredDocuments();
+console.log(removeExpiredDocuments());
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -272,7 +270,7 @@ exports.handler = async event => {
     expiredDocsData.docMetadata.push(doc);
   });
   // </CODE> //////////////////////
-
+  // const expiredDocsData = removeExpiredDocuments();
   const response = {
     statusCode: 200,
     body: JSON.stringify({
