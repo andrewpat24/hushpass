@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "npm run {scriptName}",
-  "prodURL": "https://ancient-meadow-27611.herokuapp.com/",
+  "prodURL": "https://hush-hush.herokuapp.com/",
   "main": "index.js",
   "engines": {
     "node": "^11",
@@ -15,7 +15,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
-  "author": "Andrew Patterson",
+  "author": "Andrew Patterson and Peter Malolepsy",
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
