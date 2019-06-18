@@ -2,6 +2,10 @@
   display: flex;
 }
 
+#upload-form-box {
+  cursor: pointer;
+}
+
 .uploadForm {
   flex-direction: row;
   width: 100%;
