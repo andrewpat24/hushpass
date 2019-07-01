@@ -195,8 +195,8 @@ class UploadForm extends Component {
                     <label className="tosBox">
                       <input type="checkbox" id="tosCheckBox" />
                       <span className="checkable">
-                        By uploading I agree to use this site in a lawful maner
-                        and assume all responcibility for my use of it.
+                        By uploading I agree to use this site in a lawful manner
+                        and assume all responsibility for my use of it.
                       </span>
                     </label>
                   </div>
